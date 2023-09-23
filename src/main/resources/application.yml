@@ -1,1 +1,20 @@
+spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2
+  datasource:
+    url: jdbc:h2:mem:test
+    driver-class-name: org.h2.Driver
+  jpa:
+    database: h2
+    database-platform: org.hibernate.dialect.H2Dialect
 
+jwt:
+  access:
+    expiration: 3600000
+    header: Authorization
+  refresh:
+    expiration: 1209600000
+    header: Refresh
+  key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKXROG4n3srR2asr1BIhvcNAQEBBQADSwAwSAJBAKXROG4ROG4n3srR2asr1BIhvcNAQ
