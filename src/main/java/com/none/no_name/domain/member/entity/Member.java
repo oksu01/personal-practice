@@ -28,4 +28,13 @@ public class Member extends BaseEntity {
 	private String password;
 
 	private Authority authority;
+
+	public static Member createMember(String email, String password, String nickname) {
+		return Member.builder()
+			.email(email)
+			.password(password)
+			.nickname(nickname)
+			.authority(Authority.ROLE_USER)
+			.build();
+	}
 }
