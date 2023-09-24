@@ -3,26 +3,17 @@ package com.none.no_name.domain.auth.jwt.filter;
 import static com.none.no_name.domain.auth.util.AuthConstant.*;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import org.slf4j.MDC;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.none.no_name.domain.auth.jwt.userdetail.CustomUserDetails;
 import com.none.no_name.domain.auth.jwt.userdetail.CustomUserDetailsService;
 import com.none.no_name.domain.auth.jwt.util.JwtProvider;
-import com.none.no_name.domain.member.repository.MemberRepository;
-import com.none.no_name.global.exception.business.BusinessException;
-import com.none.no_name.global.exception.business.jwt.JwtExpiredException;
-import com.none.no_name.global.exception.business.jwt.JwtNotValidException;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
