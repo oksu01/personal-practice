@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.none.no_name.auth.jwt.userdetail.CustomUserDetails;
 import com.none.no_name.auth.jwt.userdetail.CustomUserDetailsService;
 import com.none.no_name.auth.util.AuthConstant;
+import com.none.no_name.global.exception.business.common.UnknownException;
 import com.none.no_name.global.exception.business.jwt.JwtExpiredException;
 import com.none.no_name.global.exception.business.jwt.JwtNotValidException;
 
@@ -111,6 +112,8 @@ public class JwtProvider {
 			throw new JwtExpiredException();
 		} catch (SecurityException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
 			throw new JwtNotValidException();
+		} catch (Exception e) {
+			throw new UnknownException();
 		}
 	}
 
@@ -121,6 +124,8 @@ public class JwtProvider {
 			throw new JwtExpiredException();
 		} catch (SecurityException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
 			throw new JwtNotValidException();
+		} catch (Exception e) {
+			throw new UnknownException();
 		}
 	}
 }
