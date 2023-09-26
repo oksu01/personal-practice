@@ -1,18 +1,30 @@
 package com.none.no_name.auth.jwt.filter;
 
+import static com.none.no_name.auth.util.AuthUtil.*;
+
 import java.io.IOException;
 
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.none.no_name.auth.util.AuthConstant;
 import com.none.no_name.auth.dto.JwtLogin;
 import com.none.no_name.auth.jwt.util.JwtProvider;
+import com.none.no_name.auth.util.AuthUtil;
+import com.none.no_name.global.exception.business.common.MethodNotAllowedException;
+import com.none.no_name.global.exception.business.member.MemberNotFoundException;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,8 +46,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
 		if (!request.getMethod().equals("POST")) {
-			// POST 메서드로만 로그인 요청을 받고 싶은 경우
-			// 다른 메서드로 들어온 요청일 시 예외를 발생
+			throw new MethodNotAllowedException("POST");
 		}
 
 		try {
@@ -46,7 +57,30 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 			return authenticationManager.authenticate(authenticationToken);
 
-		}  catch (Exception exception) {
+		} catch (BadCredentialsException e) {
+			return null;
+			// 잘못된 자격 증명 처리
+		} catch (LockedException e) {
+			return null;
+			// 계정 잠금 처리
+		} catch (DisabledException e) {
+			return null;
+			// 계정 비활성화 처리
+		} catch (AccountExpiredException e) {
+			return null;
+			// 계정 만료 처리
+		} catch (CredentialsExpiredException e) {
+			return null;
+			// 자격 증명(비밀번호) 만료 처리
+		} catch (UsernameNotFoundException e) {
+			setResponse(response, new MemberNotFoundException());
+			return null;
+			// 사용자가 존재하지 않는 경우 처리
+		} catch (AuthenticationServiceException e) {
+			return null;
+			// 다른 인증 예외 처리
+		} catch (Exception e) {
+			setResponse(response);
 			return null;
 		}
 	}

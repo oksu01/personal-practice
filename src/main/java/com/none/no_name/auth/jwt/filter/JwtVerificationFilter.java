@@ -1,5 +1,8 @@
 package com.none.no_name.auth.jwt.filter;
 
+import static com.none.no_name.auth.util.AuthConstant.*;
+import static com.none.no_name.auth.util.AuthUtil.*;
+
 import java.io.IOException;
 import java.util.Collection;
 
@@ -13,6 +16,10 @@ import com.none.no_name.auth.jwt.userdetail.CustomUserDetails;
 import com.none.no_name.auth.jwt.userdetail.CustomUserDetailsService;
 import com.none.no_name.auth.util.AuthConstant;
 import com.none.no_name.auth.jwt.util.JwtProvider;
+import com.none.no_name.auth.util.AuthUtil;
+import com.none.no_name.global.exception.business.BusinessException;
+import com.none.no_name.global.exception.business.jwt.JwtExpiredException;
+import com.none.no_name.global.exception.business.jwt.JwtNotValidException;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -36,8 +43,12 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 		try{
 			Claims claims = verifyClaims(request);
 			setAuthenticationToContext(claims);
+		} catch(BusinessException e){
+			setResponse(response, e);
+			return;
 		} catch(Exception e){
-			request.setAttribute(AuthConstant.EXCEPTION, e);
+			setResponse(response);
+			return;
 		}
 
 		filterChain.doFilter(request, response);

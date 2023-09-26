@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.member.repository.MemberRepository;
+import com.none.no_name.global.exception.business.member.MemberNotFoundException;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -19,8 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		// todo : 이메일이 존재 하지 않을 시 존재 하지 않는 회원 예외 발생 시키기
-		Member member = memberRepository.findByEmail(username).orElseThrow();
+		Member member = memberRepository.findByEmail(username).orElseThrow(MemberNotFoundException::new);
 
 		return new CustomUserDetails(member);
 	}
