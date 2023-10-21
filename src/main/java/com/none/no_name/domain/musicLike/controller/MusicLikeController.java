@@ -21,17 +21,17 @@ public class MusicLikeController {
     private final MusicLikeService musicLikeService;
 
     @PatchMapping("music-like/like")
-    public ResponseEntity<ApiSingleResponse<Boolean>> updateLike(Long loginMemberId, Long memberId) {
+    public ResponseEntity<ApiSingleResponse<Boolean>> updateLike(Long loginMemberId, Long musicId) {
 
-        boolean isLiked = musicLikeService.updateLike(loginMemberId, memberId);
+        boolean isLiked = musicLikeService.updateLike(loginMemberId, musicId);
 
         return ResponseEntity.ok(ApiSingleResponse.ok(isLiked, "좋아요 상태가 업데이트 되었습니다."));
     }
 
     @GetMapping
-    public ResponseEntity<ApiSingleResponse<MusicInfo>> getMusicLike(Long musicId, Long loginMemberId) {
+    public ResponseEntity<ApiSingleResponse<MusicInfo>> getMusicLike(Long loginMemberId, Long musicId) {
 
-        MusicInfo musicLike = musicLikeService.getMusicLike(musicId, loginMemberId);
+        MusicInfo musicLike = musicLikeService.getMusicLike(loginMemberId, musicId);
 
         return ResponseEntity.ok(ApiSingleResponse.ok(musicLike, "음원 조회가 완료되었습니다."));
     }

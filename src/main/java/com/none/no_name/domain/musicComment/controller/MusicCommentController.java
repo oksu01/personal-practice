@@ -47,15 +47,15 @@ public class MusicCommentController {
     @PatchMapping
     public ResponseEntity<ApiSingleResponse<Void>> updateComment(Long commentId, Long loginMemberId, MusicCommentResponse response) {
 
-        musicCommentService.updateComment(commentId, response.toService());
+        musicCommentService.updateComment(commentId, loginMemberId, response.toService());
 
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteComments(Long commentId) {
+    public ResponseEntity<Void> deleteComments(Long commentId, Long loginMemberId) {
 
-        musicCommentService.deleteComment(commentId);
+        musicCommentService.deleteComment(commentId, loginMemberId);
 
         return ResponseEntity.noContent().build();
     }

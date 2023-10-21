@@ -28,26 +28,26 @@ public class MusicLikeService {
     private final MusicRepository musicRepository;
     private final MemberMusicRepository memberMusicRepository;
 
-    public boolean updateLike(Long loginMemberId, Long memberId) {
+    public boolean updateLike(Long loginMemberId, Long musicId) {
 
         Member member = verifiedMember(loginMemberId);
 
         boolean isLiked =  isLiked(loginMemberId);
 
         if(!isLiked) {
-            liked(loginMemberId, memberId);
+            liked(loginMemberId, musicId);
             return true;
         } else {
-            hated(member, memberId);
+            hated(loginMemberId, musicId);
             return false;
         }
     }
 
-    private void liked(Long loginMemberId, Long memberId) {
+    private void liked(Long loginMemberId, Long musicId) {
 
         Member member = verifiedMember(loginMemberId);
 
-        Music music = verifiedMusic(memberId);
+        Music music = verifiedMusic(musicId);
 
         music.addLikes();
 
@@ -60,18 +60,22 @@ public class MusicLikeService {
         memberMusicRepository.save(memberMusic);
     }
 
-    private void hated(Member loginMember, Long memberId) {
+    private void hated(Long loginMemberId, Long musicId) {
 
-        Music music = verifiedMusic(memberId);
+        Music music = verifiedMusic(musicId);
+
+        Member member = verifiedMember(loginMemberId);
 
         music.decreaseLikes();
 
-        musicLikeRepository.findByMusic(loginMember);
+        musicLikeRepository.findByMusic(music).ifPresent(musicLikeRepository::delete);
     }
 
     public MusicInfo getMusicLike(Long musicId, Long loginMemberId) {
 
         verifiedMember(loginMemberId);
+
+        verifiedMusic(musicId);
 
         Music music = musicLikeRepository.findById(musicId).orElseThrow(MusicNotFoundException::new).getMusic();
 
