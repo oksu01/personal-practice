@@ -5,14 +5,17 @@ import com.none.no_name.domain.music.dto.MusicInfo;
 import com.none.no_name.domain.music.dto.MusicSort;
 import com.none.no_name.domain.music.dto.MusicUpdateControllerApi;
 import com.none.no_name.domain.music.service.MusicService;
+import com.none.no_name.domain.playListMusic.entity.PlayListMusic;
 import com.none.no_name.global.response.ApiPageResponse;
 import com.none.no_name.global.response.ApiSingleResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/music")
@@ -33,8 +36,7 @@ public class MusicController {
 
     //음원 등록
     @PostMapping
-    public ResponseEntity<ApiSingleResponse<Void>> createMusic(Long loginMemberId,
-                                                               MusicCreateApi request) {
+    public ResponseEntity<ApiSingleResponse<Void>> createMusic(Long loginMemberId, MusicCreateApi request) {
 
         Long musicId = musicService.createMusic(loginMemberId, request.toService());
 
@@ -71,17 +73,18 @@ public class MusicController {
 
     //플리 안에 있는 음원 전체 조회
     @GetMapping("/playlists/{playList-id}")
-    public ResponseEntity<ApiPageResponse<MusicInfo>> getPlayListMusics(Long playListId,
-                                                                        Long loginMember,
-                                                                        int page,
-                                                                        int size,
-                                                                        MusicSort sort) {
+    public ResponseEntity<ApiPageResponse<PlayListMusic>> getPlayListMusics(
+            @PathVariable("playList-id") Long playListId,
+            @RequestParam Long loginMember,
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam MusicSort sort
+    ) {
+        Page<PlayListMusic> pageResult = musicService.getPlayListMusics(page - 1, size, playListId, sort);
 
-        Page<MusicInfo> playListMusics = musicService.getPlayListMusics(page-1, size, sort);
+        ApiPageResponse<PlayListMusic> apiPageResponse = ApiPageResponse.of(pageResult, HttpStatus.OK, "플레이리스트 음원 조회 성공");
 
-        return ResponseEntity.ok(ApiPageResponse.ok(playListMusics, "플레이리스트 음원 조회 성공"));
-
-
+        return ResponseEntity.ok(apiPageResponse);
     }
 
     //음원 수정

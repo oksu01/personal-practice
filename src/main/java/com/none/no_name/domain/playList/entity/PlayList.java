@@ -26,7 +26,7 @@ public class PlayList extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long palyListId;
+    private Long playListId;
 
     @ManyToOne
     @JoinColumn(name = "member_id")

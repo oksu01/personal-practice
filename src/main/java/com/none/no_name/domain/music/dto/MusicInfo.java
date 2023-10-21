@@ -30,7 +30,7 @@ public class MusicInfo {
                                String musicUri,
                                int musicLikeCount,
                                LocalDateTime createdDate,
-                               LocalDateTime modifiedAt,
+                               LocalDateTime modifiedDate,
                                List<MusicTag> musicTags) {
 
         return MusicInfo.builder()
@@ -41,7 +41,7 @@ public class MusicInfo {
                 .musicUri(musicUri)
                 .musicLikeCount(musicLikeCount)
                 .createdDate(createdDate)
-                .modifiedAt(modifiedAt)
+                .modifiedAt(modifiedDate)
                 .musicTags(musicTags)
                 .build();
     }

@@ -53,7 +53,7 @@ public class MusicCommentService {
                 : musicCommentRepository.findAllByMusicIdPaging(musicId, pageRequest);
 
         Page<CommentInfo> commentInfos = comments.map(commentMusic -> {
-            String content = commentMusic.getContent(); // 댓글 내용 가져오기(나중에 작성자랑, 좋아요 수 가져오는 로직 추가하기)
+            String content = commentMusic.getContent(); // 댓글 내용 가져오기(나중에 작성자랑, 좋아요 수 가져오는 로직 추가해보기)
 
             CommentInfo commentInfo =
                     CommentInfo.builder()
@@ -67,14 +67,18 @@ public class MusicCommentService {
         return commentInfos;
     }
 
-    public void updateComment(Long commentId, CommentApi request) {
+    public void updateComment(Long commentId, Long loginMemberId, CommentApi request) {
+
+        verifiedMember(loginMemberId);
 
         MusicComment musicComment = verifiedComment(commentId);
 
         musicComment.updateMusicComment(request.getContent());
     }
 
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long commentId, Long loginMemberId) {
+
+        verifiedMember(loginMemberId);
 
         verifiedComment(commentId);
 

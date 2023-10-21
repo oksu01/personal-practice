@@ -1,6 +1,5 @@
 package com.none.no_name.domain.music.service;
 
-import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.member.repository.MemberRepository;
 import com.none.no_name.domain.music.dto.CreateMusic;
 import com.none.no_name.domain.music.dto.MusicInfo;
@@ -8,29 +7,28 @@ import com.none.no_name.domain.music.dto.MusicSort;
 import com.none.no_name.domain.music.dto.MusicUpdateServiceApi;
 import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.domain.music.repository.MusicRepository;
+import com.none.no_name.domain.playList.entity.PlayList;
+import com.none.no_name.domain.playList.repository.PlayListRepository;
+import com.none.no_name.domain.playListMusic.entity.PlayListMusic;
 import com.none.no_name.global.exception.business.member.MemberAccessDeniedException;
 import com.none.no_name.global.exception.business.music.MusicNotFoundException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import com.none.no_name.global.exception.business.playList.PlayListNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Transactional
 @Service
+@RequiredArgsConstructor
 public class MusicService {
 
     private final MemberRepository memberRepository;
     private final MusicRepository musicRepository;
-
-    public MusicService(MemberRepository memberRepository,
-                        MusicRepository musicRepository){
-        this.memberRepository = memberRepository;
-        this.musicRepository = musicRepository;
-    }
+    private final PlayListRepository playListRepository;
 
     public MusicInfo getMusic(Long musicId, Long loginMemberId) {
 
@@ -61,40 +59,70 @@ public class MusicService {
     }
 
     public Page<MusicInfo> getMusics(Long musicId, int page, int size, MusicSort musicSort) {
-
         Sort sort = (musicSort == MusicSort.Likes) ? Sort.by(Sort.Direction.DESC, "like", "createdDate") : Sort.by(Sort.Direction.DESC, "createdDate");
-
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-        List<MusicInfo> musicList = musicRepository.findMusicInfoByMusicId(musicId, pageRequest);
+        Page<Music> musicPage = musicRepository.findMusicInfoByMusicId(musicId, pageRequest);
 
-        return new PageImpl<>(musicList, pageRequest, musicList.size());
+        // Page<MusicInfo>를 생성하고 변환 작업을 자동으로 수행합니다.
+        Page<MusicInfo> musicInfoPage = musicPage.map(music -> {
+            return MusicInfo.of(
+                    music.getArtistName(),
+                    music.getAlbumName(),
+                    music.getMusicTime(),
+                    music.getAlbumCoverImag(),
+                    music.getMusicUrl(),
+                    music.getMusicLikeCount(),
+                    music.getCreatedDate(),
+                    music.getModifiedDate(),
+                    music.getMusicTags()
+            );
+        });
 
+        return musicInfoPage;
     }
 
     public Page<MusicInfo> getUserMusics(Long musicId, int page, int size, MusicSort musicSort) {
-
         Sort sort = (musicSort == MusicSort.Likes) ? Sort.by(Sort.Direction.DESC, "like", "createdDate") : Sort.by(Sort.Direction.DESC, "createdDate");
-
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-        List<MusicInfo> musicList = musicRepository.findMusicInfoByMusicId(musicId, pageRequest);
+        Page<Music> musicPage = musicRepository.findMusicInfoByMusicId(musicId, pageRequest);
 
-        return new PageImpl<>(musicList, pageRequest, musicList.size());
+        // Page<MusicInfo>를 생성하고 변환 작업을 자동으로 수행합니다.
+        Page<MusicInfo> musicInfoPage = musicPage.map(music -> {
+            return MusicInfo.of(
+                    music.getArtistName(),
+                    music.getAlbumName(),
+                    music.getMusicTime(),
+                    music.getAlbumCoverImag(),
+                    music.getMusicUrl(),
+                    music.getMusicLikeCount(),
+                    music.getCreatedDate(),
+                    music.getModifiedDate(),
+                    music.getMusicTags()
+            );
+        });
 
+        return musicInfoPage;
     }
 
-    public Page<MusicInfo> getPlayListMusics(int page, int size, MusicSort musicSort) {
-
+    public Page<PlayListMusic> getPlayListMusics(int page, int size, Long playListId, MusicSort musicSort) {
         Sort sort = (musicSort == MusicSort.Likes) ? Sort.by(Sort.Direction.DESC, "like", "createdDate") : Sort.by(Sort.Direction.DESC, "createdDate");
 
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
+        // 재생 목록 유효성 검사
+        PlayList playList = verifiedPlayList(playListId);
 
-//        List<MusicInfo> musicList = musicRepository.findByPlayListMusics(playListId, pageRequest);
+        // 재생 목록에 속한 음악 목록 가져오기
+        List<PlayListMusic> musics = playList.getPlayListMusics();
 
-//        return new PageImpl<>(musicList, pageRequest, musicList.size());
-        return null;
+        // 페이징 처리 및 정렬
+        Pageable pageable = PageRequest.of(page, size, sort);
+        int fromIndex = pageable.getPageSize() * page;
+        int toIndex = Math.min(fromIndex + pageable.getPageSize(), musics.size());
+        List<PlayListMusic> pagedMusics = musics.subList(fromIndex, toIndex);
 
+        // 페이지 정보와 함께 결과를 반환
+        return new PageImpl<>(pagedMusics, pageable, musics.size());
     }
 
     public void updateMusic(Long musicId, Long loginMemberId, MusicUpdateServiceApi request) {
@@ -122,12 +150,16 @@ public class MusicService {
     }
 
 
-    public Member verifiedMember(Long loginMemberId) {
-        return memberRepository.findById(loginMemberId).orElseThrow(MemberAccessDeniedException::new);
+    public void verifiedMember(Long loginMemberId) {
+        memberRepository.findById(loginMemberId).orElseThrow(MemberAccessDeniedException::new);
     }
 
     public Music verifedMusic(Long musicId) {
         return musicRepository.findById(musicId).orElseThrow(MusicNotFoundException::new);
+    }
+
+    public PlayList verifiedPlayList(Long playListId) {
+        return playListRepository.findById(playListId).orElseThrow(PlayListNotFoundException::new);
     }
 
 
