@@ -1,7 +1,4 @@
 spring:
-  config:
-    import:
-      - classpath:/application-secret.yml
   h2:
     console:
       enabled: true
@@ -19,23 +16,23 @@ spring:
           google:
             scope: email
             redirect-uri: http://localhost:8080/auth/oauth/code
-#            client-id: your-client-id
-#            client-secret: your-client-secret
+            client-id: your-client-id
+            client-secret: your-client-secret
           kakao:
             authorization-grant-type: authorization_code
             scope: account_email
             client-name: kakao
             client-authentication-method: POST
             redirect-uri: http://localhost:8080/auth/oauth/code
-#            client-id: your-client-id
-#            client-secret: your-client-secret
+            client-id: your-client-id
+            client-secret: your-client-secret
           naver:
             authorization-grant-type: authorization_code
             scope:
             client-name: Naver
             redirect-uri: http://localhost:8080/auth/oauth/code
-#            client-id: your-client-id
-#            client-secret: your-client-secret
+            client-id: your-client-id
+            client-secret: your-client-secret
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
