@@ -1,6 +1,7 @@
 package com.none.no_name.domain.playListTag.entity;
 
 import com.none.no_name.domain.playList.entity.PlayList;
+import com.none.no_name.domain.playListTag.dto.PlayListTagInfo;
 import com.none.no_name.domain.tag.entity.Tag;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,4 +34,10 @@ public class PlayListTag {
 
     @ManyToOne(fetch = LAZY)
     private PlayList playList;
+
+    public static PlayListTag createTag(Long playListTagId, PlayListTagInfo request) {
+        return PlayListTag.builder()
+                .playList(request.getPlayList())
+                .build();
+    }
 }

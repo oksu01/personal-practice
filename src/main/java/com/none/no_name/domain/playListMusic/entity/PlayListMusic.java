@@ -1,7 +1,9 @@
 package com.none.no_name.domain.playListMusic.entity;
 
+import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.domain.playList.entity.PlayList;
+import com.none.no_name.domain.playListMusic.dto.PlayListMusicInfo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,4 +30,11 @@ public class PlayListMusic {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "music_id")
     private Music music;
+
+    public static PlayListMusic createPlayListMusic(PlayListMusicInfo info, Music music) {
+        return PlayListMusic.builder()
+                .music(info.getMusic())
+                .playList(info.getPlayList())
+                .build();
+    }
 }

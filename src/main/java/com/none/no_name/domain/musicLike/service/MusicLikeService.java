@@ -38,7 +38,7 @@ public class MusicLikeService {
             liked(loginMemberId, memberId);
             return true;
         } else {
-            hated(member, memberId);
+            hated(loginMemberId, memberId);
             return false;
         }
     }
@@ -60,13 +60,13 @@ public class MusicLikeService {
         memberMusicRepository.save(memberMusic);
     }
 
-    private void hated(Member loginMember, Long memberId) {
+    private void hated(Long loginMember, Long memberId) {
 
         Music music = verifiedMusic(memberId);
 
         music.decreaseLikes();
 
-        musicLikeRepository.findByMusic(loginMember);
+        musicLikeRepository.findById(loginMember).ifPresent(musicLikeRepository::delete);
     }
 
     public MusicInfo getMusicLike(Long musicId, Long loginMemberId) {
