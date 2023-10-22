@@ -2,6 +2,7 @@ package com.none.no_name.domain.music.entity;
 
 import com.none.no_name.domain.memberMusic.entity.MemberMusic;
 import com.none.no_name.domain.music.dto.CreateMusic;
+import com.none.no_name.domain.music.dto.MusicInfo;
 import com.none.no_name.domain.musicLike.entity.MusicLike;
 import com.none.no_name.domain.musicTag.entity.MusicTag;
 import com.none.no_name.domain.playListMusic.entity.PlayListMusic;
@@ -97,5 +98,16 @@ public class Music extends BaseEntity {
         this.likes--;
     }
 
+    public static Music addMusic(Long musicId, MusicInfo musicInfo) {
+        return Music.builder()
+                .musicId(musicId)
+                .artistName(musicInfo.getArtistName())
+                .artistName(musicInfo.getAlbumName())
+                .musicTime(musicInfo.getMusicTime())
+                .albumCoverImag(musicInfo.getAlbumCoverImg())
+                .musicUrl(musicInfo.getMusicUri())
+                .build();
+
+    }
 }
 

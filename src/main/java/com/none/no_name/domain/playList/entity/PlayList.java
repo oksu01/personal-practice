@@ -1,6 +1,10 @@
 package com.none.no_name.domain.playList.entity;
 
 import com.none.no_name.domain.member.entity.Member;
+import com.none.no_name.domain.music.entity.Music;
+import com.none.no_name.domain.playList.dto.PlayListCreateApi;
+import com.none.no_name.domain.playList.dto.PlayListPatchApi;
+import com.none.no_name.domain.playList.dto.PlayListRequestApi;
 import com.none.no_name.domain.playListComment.entity.PlayListComment;
 import com.none.no_name.domain.playListLike.entity.PlayListLike;
 import com.none.no_name.domain.playListMusic.entity.PlayListMusic;
@@ -53,8 +57,34 @@ public class PlayList extends BaseEntity {
     private List<PlayListComment> playListComments = new ArrayList<>();
 
     @Column(nullable = false)
-    private int likeCount;
+    private int likes;
+
+    private String content;
 
     @OneToMany(mappedBy = "playList", cascade = ALL)
     private List<PlayListMusic> playListMusics = new ArrayList<>();
+
+    public static PlayList createPlayList(Music music, Member member, PlayListCreateApi request) {
+        return PlayList.builder()
+                .title(request.getTitle())
+                .coverImg(request.getCoverImg())
+                .content(request.getContent())
+                .build();
+    }
+
+    public static PlayList updatePlayList(String title, String coverImg, String content) {
+        return PlayList.builder()
+                .title(title)
+                .coverImg(coverImg)
+                .content(content)
+                .build();
+    }
+
+    public void addLikes() {
+        this.likes++;
+    }
+
+    public void decreaseLikes() {
+        this.likes--;
+    }
 }
