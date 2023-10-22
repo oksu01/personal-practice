@@ -2,6 +2,7 @@ package com.none.no_name.domain.tag.entity;
 
 import com.none.no_name.domain.musicTag.entity.MusicTag;
 import com.none.no_name.domain.playListTag.entity.PlayListTag;
+import com.none.no_name.domain.tag.dto.TagRequestApi;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,5 +34,12 @@ public class Tag {
 
     @OneToMany(mappedBy = "tag", cascade = ALL)
     private List<PlayListTag> playListTagList = new ArrayList<>();
+
+    public static Tag createTag(Long musicId, Long loginMember, TagRequestApi request) {
+        return Tag.builder()
+                .category(request.getCategory())
+                .tagId(request.getTagId())
+                .build();
+    }
 }
 

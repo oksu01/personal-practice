@@ -33,4 +33,18 @@ public class PlayListComment {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "playList_id")
     private PlayList playList;
+
+    private String content;
+
+    public static PlayListComment createComment(Long playListId, Long loginMemberId, PlayList playList) {
+        return PlayListComment.builder()
+                .content(playList.getContent())
+                .build();
+    }
+
+    public static void updateComment(Long commentId, Long loginMemberId, PlayList playList) {
+        PlayListComment.builder()
+                .content(playList.getContent())
+                .build();
+    }
 }
