@@ -10,10 +10,10 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface PlayListRepository extends JpaRepository<PlayList, Long> {
+public interface PlayListRepository extends JpaRepository<PlayList, Long>, PlayListRepositoryCustom{
 
     Page<PlayList> findAllByPlayListId(Long playListId, Pageable pageable);
 
-    @Query("select p from PlayListLike p where p.playListLikeId =: playListLikeId")
-    Optional<Boolean> checkMemberLikedMusic(Long memberId);
+//    @Query("select p from PlayListLike p where p.playListLikeId =: playListLikeId")
+//    Optional<Boolean> checkMemberLikedMusic(Long memberId);
 }

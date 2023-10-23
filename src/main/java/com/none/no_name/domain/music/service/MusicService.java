@@ -7,6 +7,8 @@ import com.none.no_name.domain.music.dto.MusicSort;
 import com.none.no_name.domain.music.dto.MusicUpdateServiceApi;
 import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.domain.music.repository.MusicRepository;
+import com.none.no_name.domain.music.repository.MusicRepositoryCustom;
+import com.none.no_name.domain.music.repository.MusicRepositoryImpl;
 import com.none.no_name.domain.playList.entity.PlayList;
 import com.none.no_name.domain.playList.repository.PlayListRepository;
 import com.none.no_name.domain.playListMusic.entity.PlayListMusic;
@@ -14,6 +16,7 @@ import com.none.no_name.global.exception.business.member.MemberAccessDeniedExcep
 import com.none.no_name.global.exception.business.music.MusicNotFoundException;
 import com.none.no_name.global.exception.business.playList.PlayListNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +32,7 @@ public class MusicService {
     private final MemberRepository memberRepository;
     private final MusicRepository musicRepository;
     private final PlayListRepository playListRepository;
+    private final MusicRepositoryImpl musicRepositoryImpl;
 
     public MusicInfo getMusic(Long musicId, Long loginMemberId) {
 
@@ -62,7 +66,7 @@ public class MusicService {
         Sort sort = (musicSort == MusicSort.Likes) ? Sort.by(Sort.Direction.DESC, "like", "createdDate") : Sort.by(Sort.Direction.DESC, "createdDate");
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-        Page<Music> musicPage = musicRepository.findMusicInfoByMusicId(musicId, pageRequest);
+        Page<Music> musicPage = musicRepositoryImpl.findMusicInfoByMusicId(musicId, pageRequest);
 
         // Page<MusicInfo>를 생성하고 변환 작업을 자동으로 수행합니다.
         Page<MusicInfo> musicInfoPage = musicPage.map(music -> {
@@ -86,7 +90,7 @@ public class MusicService {
         Sort sort = (musicSort == MusicSort.Likes) ? Sort.by(Sort.Direction.DESC, "like", "createdDate") : Sort.by(Sort.Direction.DESC, "createdDate");
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-        Page<Music> musicPage = musicRepository.findMusicInfoByMusicId(musicId, pageRequest);
+        Page<Music> musicPage = musicRepositoryImpl.findMusicInfoByMusicId(musicId, pageRequest);
 
         // Page<MusicInfo>를 생성하고 변환 작업을 자동으로 수행합니다.
         Page<MusicInfo> musicInfoPage = musicPage.map(music -> {

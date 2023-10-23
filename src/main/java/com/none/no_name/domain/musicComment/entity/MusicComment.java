@@ -34,6 +34,9 @@ public class MusicComment {
     @JoinColumn(name = "music_id")
     private Music music;
 
+//    @Column(nullable = true)
+//    private int like;
+
     public static MusicComment newComment(CommentApi comment, Member member, Music music) {
         return MusicComment.builder()
                 .content(comment.getContent())
