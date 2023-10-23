@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface PlayListLikeRepository extends JpaRepository<PlayListLike, Long> {
+public interface PlayListLikeRepository extends JpaRepository<PlayListLike, Long>, PlayListLikeRepositoryCustom {
 
-    @Query("select p from PlayListLike p where p.playListLikeId =: playListLikeId")
-    Page<PlayListLike> checkPlayListLike(Long playListLikeId, Pageable pageable);
+//    @Query("select p from PlayListLike p where p.playListLikeId =: playListLikeId")
+//    Page<PlayListLike> checkPlayListLike(Long playListLikeId, Pageable pageable);
 }

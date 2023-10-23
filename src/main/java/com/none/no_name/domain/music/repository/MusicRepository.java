@@ -12,11 +12,11 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface MusicRepository extends JpaRepository<Music, Long> {
+public interface MusicRepository extends JpaRepository<Music, Long>, MusicRepositoryCustom {
 
 
-    @Query("select m from Music m where m.musicId = :musicId")
-    Page<Music> findMusicInfoByMusicId(Long musicId, Pageable pageable);
+//    @Query("select m from Music m where m.musicId = :musicId")
+//    Page<Music> findMusicInfoByMusicId(Long musicId, Pageable pageable);
 
 }
 
