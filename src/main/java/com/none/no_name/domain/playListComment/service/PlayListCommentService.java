@@ -32,6 +32,8 @@ public class PlayListCommentService {
         PlayList playList = verifiedPlayList(playListId);
 
         PlayListComment comment = PlayListComment.createComment(playListId, loginMemberId, playList);
+
+        playListCommentRepository.save(comment);
     }
 
     public void updateComment(Long commentId, Long loginMemberId, Long playListId) {
