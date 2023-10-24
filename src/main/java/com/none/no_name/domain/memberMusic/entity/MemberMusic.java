@@ -28,6 +28,15 @@ public class MemberMusic {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "music_id")
     private Music music;
+
+    public static MemberMusic createMemberMusic(Member member, Music music) {
+
+        return MemberMusic.builder()
+                .member(member)
+                .music(music)
+                .build();
+
+    }
 }
 
 

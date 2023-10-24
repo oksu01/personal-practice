@@ -36,6 +36,8 @@ public class PlayListService {
 
         PlayList playList = PlayList.createPlayList(music, member, request);
 
+        playListRepository.save(playList);
+
         return playList.getPlayListId();
     }
 
