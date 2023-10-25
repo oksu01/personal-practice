@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/search")
@@ -30,7 +31,8 @@ public class SearchController {
     private final PlayListRepository playListRepository;
 
     @GetMapping("/musics")
-    public ResponseEntity<ApiPageResponse<Music>> searchMusic(String keyword, @PageableDefault(sort = "id", direction = Sort.Direction.DESC)Pageable pageable) {
+    public ResponseEntity<ApiPageResponse<Music>> searchMusic(@RequestParam String keyword,
+                                                              @PageableDefault(sort = "id", direction = Sort.Direction.DESC)Pageable pageable) {
 
         Page<Music> searchMusic = searchService.searchMusic(keyword, pageable);
 
@@ -38,15 +40,17 @@ public class SearchController {
     }
 
     @GetMapping("/playLists")
-    public ResponseEntity<ApiPageResponse<PlayList>> searchPlayList(String keyword, @PageableDefault(sort = "id", direction = Sort.Direction.DESC)Pageable pageable) {
+    public ResponseEntity<ApiPageResponse<PlayList>> searchPlayList(@RequestParam String keyword,
+                                                                    @PageableDefault(sort = "id", direction = Sort.Direction.DESC)Pageable pageable) {
 
         Page<PlayList> searchPlayList = searchService.searchPlayList(keyword, pageable);
 
          return ResponseEntity.ok(ApiPageResponse.ok(searchPlayList, "음원목록 검색이 완료되었습니다."));
     }
 
-    @GetMapping("/tags")
-    public ResponseEntity <ApiPageResponse<Tag>> searchTag(String keyword, Pageable pageable) {
+    @GetMapping("/tags") //GET https://example.com/tags?keyword=myKeyword&page=1&size=10
+    public ResponseEntity <ApiPageResponse<Tag>> searchTag(@RequestParam String keyword,
+                                                           @RequestParam Pageable pageable) {
 
         Page<Tag> searchTag = searchService.searchTag(keyword, pageable);
 

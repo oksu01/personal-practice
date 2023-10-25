@@ -70,14 +70,16 @@ public class MusicTagService {
         return new PageImpl<>(tagInfos, pageRequest, musicTags.size());
     }
 
-    public void deleteTag(Long tagId, Long loginMemberId) {
+    public void deleteTag(Long tagId, Long loginMemberId, Long musicId) {
 
+        verifiedMusic(musicId);
         verifiedMember(loginMemberId);
         musicTagRepository.deleteById(tagId);
     }
 
-    public void deleteTags(Long tagId, Long loginMemberId) {
+    public void deleteTags(Long musicId, Long loginMemberId) {
 
+        verifiedMusic(musicId);
         verifiedMember(loginMemberId);
         musicTagRepository.deleteAll();
     }
