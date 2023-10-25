@@ -21,7 +21,7 @@ import java.net.URI;
 @RestController
 @RequestMapping("/comments")
 @RequiredArgsConstructor
-public class MusicCommentController extends BaseEntity {
+public class MusicCommentController {
 
     private final MusicCommentService musicCommentService;
 

@@ -2,6 +2,7 @@ package com.none.no_name.domain.memberMusic.entity;
 
 import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.music.entity.Music;
+import com.none.no_name.global.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Builder
 @AllArgsConstructor
 @Entity
-public class MemberMusic {
+public class MemberMusic extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

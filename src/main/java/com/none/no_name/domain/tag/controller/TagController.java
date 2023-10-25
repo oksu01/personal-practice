@@ -6,6 +6,7 @@ import com.none.no_name.domain.tag.dto.CategoryInfo;
 import com.none.no_name.domain.tag.dto.TagResponseApi;
 import com.none.no_name.domain.tag.service.TagService;
 import com.none.no_name.global.annotation.LoginId;
+import com.none.no_name.global.base.BaseEntity;
 import com.none.no_name.global.response.ApiPageResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;

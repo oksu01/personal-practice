@@ -3,6 +3,7 @@ package com.none.no_name.domain.musicComment.entity;
 import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.domain.musicComment.dto.CommentApi;
+import com.none.no_name.global.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +19,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class MusicComment {
+public class MusicComment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long musicCommentId;

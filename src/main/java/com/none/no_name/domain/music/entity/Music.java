@@ -68,12 +68,12 @@ public class Music extends BaseEntity {
 
     public static Music createMusic(Long loginMemberId, CreateMusic createMusic) {
         return Music.builder()
-                .musicName(builder().musicName)
-                .artistName(builder().artistName)
-                .albumName(builder().albumName)
-                .musicTime(builder().musicTime)
-                .albumCoverImag(builder().albumCoverImag)
-                .musicUrl(builder().musicUrl)
+                .musicName(createMusic.getMusicName())
+                .artistName(createMusic.getArtistName())
+                .albumName(createMusic.getAlbumName())
+                .musicTime(createMusic.getMusicTime())
+                .albumCoverImag(createMusic.getAlbumCoverImg())
+                .musicUrl(createMusic.getMusicUrl())
                 .build();
     }
 

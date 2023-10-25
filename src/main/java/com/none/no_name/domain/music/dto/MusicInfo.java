@@ -15,6 +15,7 @@ import java.util.List;
 @Builder
 public class MusicInfo {
 
+
     private String artistName;
     private String albumName;
     private Long musicTime;
