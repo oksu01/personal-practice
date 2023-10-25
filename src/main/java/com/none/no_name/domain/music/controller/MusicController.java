@@ -32,7 +32,7 @@ import java.util.List;
 @RequestMapping("/musics")
 @RequiredArgsConstructor
 @Validated
-public class MusicController extends BaseEntity {
+public class MusicController{
 
     private final MusicService musicService;
     private final MusicCommentService musicCommentService;
@@ -52,7 +52,8 @@ public class MusicController extends BaseEntity {
 
     //음원 등록
     @PostMapping
-    public ResponseEntity<ApiSingleResponse<Void>> createMusic(@LoginId Long loginMemberId, @RequestBody @Valid MusicCreateApi request) {
+    public ResponseEntity<ApiSingleResponse<Void>> createMusic(@LoginId Long loginMemberId,
+                                                               @RequestBody @Valid MusicCreateApi request) {
 
         Long musicId = musicService.createMusic(loginMemberId, request.toService());
 

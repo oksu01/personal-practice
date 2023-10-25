@@ -7,6 +7,7 @@ import com.none.no_name.domain.playListTag.dto.PlayListTagInfo;
 import com.none.no_name.domain.playListTag.entity.PlayListTag;
 import com.none.no_name.domain.playListTag.service.PlayListTagService;
 import com.none.no_name.global.annotation.LoginId;
+import com.none.no_name.global.base.BaseEntity;
 import com.none.no_name.global.response.ApiPageResponse;
 import com.none.no_name.global.response.ApiSingleResponse;
 import jakarta.validation.constraints.Positive;

@@ -4,6 +4,7 @@ import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.domain.playList.entity.PlayList;
 import com.none.no_name.domain.playListMusic.dto.PlayListMusicInfo;
+import com.none.no_name.global.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Getter
 @Builder
 @Entity
-public class PlayListMusic {
+public class PlayListMusic extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

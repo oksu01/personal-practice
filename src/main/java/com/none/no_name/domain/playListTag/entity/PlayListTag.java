@@ -3,6 +3,7 @@ package com.none.no_name.domain.playListTag.entity;
 import com.none.no_name.domain.playList.entity.PlayList;
 import com.none.no_name.domain.playListTag.dto.PlayListTagInfo;
 import com.none.no_name.domain.tag.entity.Tag;
+import com.none.no_name.global.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +20,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlayListTag {
+public class PlayListTag extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

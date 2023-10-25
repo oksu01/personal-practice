@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/tags")
 @RestController
 @RequiredArgsConstructor
-public class MusicTagController extends BaseEntity {
+public class MusicTagController {
 
     private final MusicTagService musicTagService;
 

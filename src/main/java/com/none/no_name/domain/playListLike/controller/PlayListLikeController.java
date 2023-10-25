@@ -5,6 +5,7 @@ import com.none.no_name.domain.playListLike.dto.PlayListLikeInfo;
 import com.none.no_name.domain.playListLike.entity.PlayListLike;
 import com.none.no_name.domain.playListLike.service.PlayListLikeService;
 import com.none.no_name.global.annotation.LoginId;
+import com.none.no_name.global.base.BaseEntity;
 import com.none.no_name.global.response.ApiPageResponse;
 import com.none.no_name.global.response.ApiSingleResponse;
 import jakarta.validation.constraints.Positive;

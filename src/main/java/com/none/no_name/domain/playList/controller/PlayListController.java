@@ -29,7 +29,7 @@ import java.net.URI;
 @RequestMapping("/playLists")
 @RestController
 @RequiredArgsConstructor
-public class PlayListController extends BaseEntity {
+public class PlayListController {
 
     private final PlayListService playListService;
     private final PlayListCommentService playListCommentService;

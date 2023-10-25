@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("music-like")
 @RestController
 @RequiredArgsConstructor
-public class MusicLikeController extends BaseEntity {
+public class MusicLikeController {
 
     private final MusicLikeService musicLikeService;
 

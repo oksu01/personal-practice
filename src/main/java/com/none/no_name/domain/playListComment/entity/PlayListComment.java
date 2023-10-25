@@ -2,6 +2,7 @@ package com.none.no_name.domain.playListComment.entity;
 
 import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.playList.entity.PlayList;
+import com.none.no_name.global.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PlayListComment {
+public class PlayListComment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

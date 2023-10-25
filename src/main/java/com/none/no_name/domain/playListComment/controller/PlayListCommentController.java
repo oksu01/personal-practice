@@ -6,6 +6,7 @@ import com.none.no_name.domain.musicComment.dto.CommentSort;
 import com.none.no_name.domain.playListComment.dto.PlayListCommentInfo;
 import com.none.no_name.domain.playListComment.service.PlayListCommentService;
 import com.none.no_name.global.annotation.LoginId;
+import com.none.no_name.global.base.BaseEntity;
 import com.none.no_name.global.response.ApiPageResponse;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
