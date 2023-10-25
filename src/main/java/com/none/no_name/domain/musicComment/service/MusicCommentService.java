@@ -29,7 +29,7 @@ public class MusicCommentService {
 
     private final MusicCommentRepository musicCommentRepository;
 
-    public void createComment(Long musicId, Long loginMemberId, CommentApi request) {
+    public Long createComment(Long musicId, Long loginMemberId, CommentApi request) {
 
         Member loginMember = verifiedMember(loginMemberId);
 
@@ -38,6 +38,8 @@ public class MusicCommentService {
         MusicComment musicComment = MusicComment.newComment(request, loginMember, music);
 
         musicCommentRepository.save(musicComment);
+
+        return musicComment.getMusicCommentId();
     }
 
     public Page<CommentInfo> getComments(Long musicId, int page, int size, CommentSort commentSort, int like) {
