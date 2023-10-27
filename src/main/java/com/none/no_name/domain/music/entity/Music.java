@@ -74,6 +74,7 @@ public class Music extends BaseEntity {
                 .musicTime(createMusic.getMusicTime())
                 .albumCoverImag(createMusic.getAlbumCoverImg())
                 .musicUrl(createMusic.getMusicUrl())
+                .tags(createMusic.getTags())
                 .build();
     }
 
@@ -81,13 +82,18 @@ public class Music extends BaseEntity {
                             String artistName,
                             String albumName,
                             int musicTime,
-                            String albumCoverImag) {
+                            String albumCoverImag,
+                            String musicUrl,
+                            List<String> tags) {
 
         this.musicName = musicName == null ? this.musicName : musicName;
         this.artistName = artistName == null ? this.artistName : artistName;
         this.albumName = albumName == null ? this.albumName : albumName;
         this.musicTime = (musicTime == 0) ? this.musicTime : musicTime;
         this.albumCoverImag = albumCoverImag == null ? this.albumCoverImag : albumCoverImag;
+        this.musicUrl = musicUrl == null ? this.musicUrl : musicUrl;
+        this.tags = tags == null ? this.tags : tags;
+
     }
 
     public void addLikes() {

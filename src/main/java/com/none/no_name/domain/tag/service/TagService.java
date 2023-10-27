@@ -33,7 +33,7 @@ public class TagService {
         tagRepository.deleteById(tagId);
     }
 
-    public Page<TagInfo> getTags(Long tagId, Long loginMemberId, int page, int size) {
+    public Page<TagInfo> getTags(Long tagId, Long loginMemberId, int page, int size, TagInfo tagInfo) {
 
         verifiedMember(loginMemberId);
         PageRequest pageRequest = PageRequest.of(page, size);
@@ -42,6 +42,8 @@ public class TagService {
 
         Page<TagInfo> tagInfoPage = tags.map(tag -> TagInfo.builder()
                 .tagId(tagId)
+                .musicId(tagInfo.getMusicId())
+                .name(tagInfo.getName())
                 .build());
 
         return tagInfoPage;

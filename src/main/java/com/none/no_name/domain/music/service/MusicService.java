@@ -49,7 +49,7 @@ public class MusicService {
                 music.getMusicLikeCount(),
                 music.getCreatedDate(),
                 music.getModifiedDate(),
-                music.getMusicTags()
+                music.getTags()
         );
     }
 
@@ -79,7 +79,7 @@ public class MusicService {
                     music.getMusicLikeCount(),
                     music.getCreatedDate(),
                     music.getModifiedDate(),
-                    music.getMusicTags()
+                    music.getTags()
             );
         });
 
@@ -103,7 +103,7 @@ public class MusicService {
                     music.getMusicLikeCount(),
                     music.getCreatedDate(),
                     music.getModifiedDate(),
-                    music.getMusicTags()
+                    music.getTags()
             );
         });
 
@@ -140,7 +140,10 @@ public class MusicService {
                 request.getArtistName(),
                 request.getAlbumName(),
                 request.getMusicTime(),
-                request.getAlbumCoverImg()
+                request.getAlbumCoverImg(),
+                request.getMusicUrl(),
+                request.getTags()
+
         );
     }
 

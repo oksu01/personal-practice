@@ -23,6 +23,7 @@ public class MusicLikeController {
 
     private final MusicLikeService musicLikeService;
 
+    //음원 좋아요 전체 조회
     @GetMapping("/{music-id}")
     public ResponseEntity<ApiSingleResponse<MusicInfo>> getMusicLike(@LoginId Long loginMemberId,
                                                                      @Positive(message = "validation.positive") @PathVariable("music-id") Long musicId) {
@@ -30,6 +31,16 @@ public class MusicLikeController {
         MusicInfo musicLike = musicLikeService.getMusicLike(loginMemberId, musicId);
 
         return ResponseEntity.ok(ApiSingleResponse.ok(musicLike, "음원 조회가 완료되었습니다."));
+    }
+
+    //음원 좋아요 수정
+    @PatchMapping("/{music-id}/like")
+    public ResponseEntity<ApiSingleResponse<Boolean>> updateLike(@LoginId Long loginMemberId,
+                                                                 @PathVariable("music-id") @Positive(message = "{validation.positive}") Long musicId) {
+
+        boolean isLiked = musicLikeService.updateLike(loginMemberId, musicId);
+
+        return ResponseEntity.ok(ApiSingleResponse.ok(isLiked, "좋아요 상태가 업데이트 되었습니다."));
     }
 
     @GetMapping("/likes")

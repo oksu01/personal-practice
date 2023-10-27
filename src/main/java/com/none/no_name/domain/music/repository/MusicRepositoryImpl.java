@@ -31,7 +31,7 @@ public class MusicRepositoryImpl implements MusicRepositoryCustom {
     @Override
     public Page<Music> findMusicInfoByMusicId(Long musicId, Pageable pageable) {
         JPAQuery<Music> query = queryFactory.selectFrom(music)
-                .where(music.musicId.eq(musicId));
+                .where(music.musicId.isNull());
 
         List<Music> content = query
                 .offset(pageable.getOffset())

@@ -9,7 +9,7 @@ public class AuthConstant {
 	public static final String REFRESH = "Refresh";
 	public static final String LOCATION = "Location";
 	public static final String LOGIN_URL = "/auth/login";
-	public static Long ACCESS_TOKEN_EXPIRE_TIME = 360000L;
+	public static Long ACCESS_TOKEN_EXPIRE_TIME = 3600000L;
 	public static Long REFRESH_TOKEN_EXPIRE_TIME = 1209600000L;
 	public static final String BEARER = "Bearer ";
 	public static final String CLAIM_AUTHORITY = "auth";
@@ -21,7 +21,7 @@ public class AuthConstant {
 
 	// @Value("${jwt.access.expiration}")
 	public void setAccessTokenExpireTime(long value) {
-		ACCESS_TOKEN_EXPIRE_TIME = 360000L;
+		ACCESS_TOKEN_EXPIRE_TIME = 3600000L;
 	}
 
 	// @Value("${jwt.refresh.expiration}")

@@ -1,10 +1,16 @@
 package com.none.no_name.domain.music.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MusicUpdateControllerApi {
     private String musicName;
     private String artistName;
@@ -12,6 +18,7 @@ public class MusicUpdateControllerApi {
     private int musicTime;
     private String albumCoverImg;
     private String musicUrl;
+    private List<String> tags;
 
 
     public MusicUpdateServiceApi toService() {
@@ -22,6 +29,7 @@ public class MusicUpdateControllerApi {
                 .musicTime(musicTime)
                 .albumCoverImg(albumCoverImg)
                 .musicUrl(musicUrl)
+                .tags(tags)
                 .build();
     }
 }
