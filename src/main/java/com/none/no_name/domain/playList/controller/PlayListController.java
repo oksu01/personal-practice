@@ -10,6 +10,7 @@ import com.none.no_name.domain.playList.service.PlayListService;
 import com.none.no_name.domain.playList.service.sort.PlayListSort;
 import com.none.no_name.domain.playListComment.dto.PlayListCommentInfo;
 import com.none.no_name.domain.playListComment.service.PlayListCommentService;
+import com.none.no_name.domain.playListComment.service.sort.PlayListCommentSort;
 import com.none.no_name.domain.playListTag.dto.PlayListApi;
 import com.none.no_name.domain.playListTag.service.PlayListTagService;
 import com.none.no_name.global.annotation.LoginId;
@@ -35,8 +36,8 @@ public class PlayListController {
     private final PlayListCommentService playListCommentService;
     private final PlayListTagService playListTagService;
 
-    @PostMapping
-    public ResponseEntity<ApiSingleResponse<Void>> createPlayList(@Positive(message = "validation.positive") Long musicId,
+    @PostMapping("/{music-id}")
+    public ResponseEntity<ApiSingleResponse<Void>> createPlayList(@PathVariable("music-id") @Positive(message = "validation.positive") Long musicId,
                                                                   @LoginId Long loginMember,
                                                                   @RequestBody @Valid PlayListCreateApi response) {
 
@@ -66,7 +67,7 @@ public class PlayListController {
 
         Page<PlayListInfo> playLists = playListService.getPlayLists(playListId, loginMemberId, page-1, size, sort);
 
-        return ResponseEntity.ok(ApiPageResponse.ok(playLists, "플레이리스트 조회가 완료되었습니다."));
+        return ResponseEntity.ok(ApiPageResponse.ok(playLists, "플레이리스트 전체 조회가 완료되었습니다."));
     }
 
     @PatchMapping
@@ -108,8 +109,8 @@ public class PlayListController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/comments")
-    public ResponseEntity<Void> createComment(@Positive(message = "validation.positive") Long playListId,
+    @PostMapping("{playList-id}/comments")
+    public ResponseEntity<Void> createComment(@PathVariable("playList-id") @Positive(message = "validation.positive") Long playListId,
                                               @LoginId Long loginMemberId) {
 
         playListCommentService.createComment(playListId, loginMemberId);
@@ -122,9 +123,10 @@ public class PlayListController {
                                                                             @LoginId Long loginMemberId,
                                                                             @Positive(message = "validation.positive") @RequestParam(defaultValue = "1") int page,
                                                                             @Positive(message = "validation.positive") @RequestParam(defaultValue = "5") int size,
-                                                                            @RequestParam(defaultValue = "created-date") CommentSort sort) {
+                                                                            @RequestParam(defaultValue = "created-date") PlayListCommentSort sort,
+                                                                            PlayListCommentInfo playListCommentInfo) {
 
-        Page<PlayListCommentInfo> comments = playListCommentService.getComments(playListId, loginMemberId, page, size, sort);
+        Page<PlayListCommentInfo> comments = playListCommentService.getComments(playListId, loginMemberId, page, size, sort, playListCommentInfo);
 
         return ResponseEntity.ok(ApiPageResponse.ok(comments, "댓글 조회가 완료되었습니다."));
     }

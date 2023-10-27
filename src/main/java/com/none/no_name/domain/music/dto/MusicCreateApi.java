@@ -1,9 +1,12 @@
 package com.none.no_name.domain.music.dto;
 
+import com.none.no_name.domain.musicTag.entity.MusicTag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @Builder
@@ -16,6 +19,7 @@ public class MusicCreateApi {
     private Long musicTime = 180L;
     private String albumCoverImg;
     private String musicUrl;
+    private List<String> tags;
 
 
     public CreateMusic toService() {
@@ -26,6 +30,7 @@ public class MusicCreateApi {
                 .musicTime(musicTime)
                 .albumCoverImg(albumCoverImg)
                 .musicUrl(musicUrl)
+                .tags(tags)
                 .build();
     }
 }

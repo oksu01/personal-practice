@@ -71,11 +71,9 @@ public class MusicLikeService {
         musicLikeRepository.findByMusic(music).ifPresent(musicLikeRepository::delete);
     }
 
-    public MusicInfo getMusicLike(Long musicId, Long loginMemberId) {
+    public MusicInfo getMusicLike(Long loginMemberId, Long musicId) {
 
         verifiedMember(loginMemberId);
-
-        verifiedMusic(musicId);
 
         Music music = musicLikeRepository.findById(musicId).orElseThrow(MusicNotFoundException::new).getMusic();
 
@@ -86,7 +84,7 @@ public class MusicLikeService {
                 .albumCoverImg(music.getAlbumCoverImag())
                 .musicUri(music.getMusicUrl())
                 .musicLikeCount(music.getMusicLikeCount())
-                .musicTags(music.getMusicTags())
+                .tags(music.getTags())
                 .build();
     }
 

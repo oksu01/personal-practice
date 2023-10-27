@@ -42,7 +42,7 @@ public class MusicCommentService {
         return musicComment.getMusicCommentId();
     }
 
-    public Page<CommentInfo> getComments(Long musicId, int page, int size, CommentSort commentSort, int like) {
+    public Page<CommentInfo> getComments(Long commentId, int page, int size, CommentSort commentSort, int like) {
 
         Sort sort = (commentSort == CommentSort.Likes)
                 ? Sort.by(Sort.Direction.DESC, "like", "createdDate")
@@ -51,8 +51,8 @@ public class MusicCommentService {
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
         Page<MusicComment> comments = (like != 0)
-                ? musicCommentRepository.findAllByMusicId(musicId, like, pageRequest)
-                : musicCommentRepository.findAllByMusicIdPaging(musicId, pageRequest);
+                ? musicCommentRepository.findAllByMusicId(commentId, like, pageRequest)
+                : musicCommentRepository.findAllByMusicIdPaging(commentId, pageRequest);
 
         Page<CommentInfo> commentInfos = comments.map(commentMusic -> {
             String content = commentMusic.getContent(); // 댓글 내용 가져오기(나중에 작성자랑, 좋아요 수 가져오는 로직 추가해보기)

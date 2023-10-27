@@ -13,6 +13,5 @@ public class PlayListCommentInfo {
     private String content;
     private Long memberId;
     private String image;
-    private Long musicId;
     private Long playListId;
 }

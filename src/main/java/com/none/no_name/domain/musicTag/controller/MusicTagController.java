@@ -23,8 +23,8 @@ public class MusicTagController {
     private final MusicTagService musicTagService;
 
 
-    @GetMapping
-    public ResponseEntity<ApiPageResponse<TagInfo>> getTag(@Positive(message = "validation.positive") Long musicId,
+    @GetMapping("/{music-id}")
+    public ResponseEntity<ApiPageResponse<TagInfo>> getTag(@Positive(message = "validation.positive") @PathVariable("music-id") Long musicId,
                                                            @LoginId Long loginMember,
                                                            @RequestParam(defaultValue = "1") @Positive(message = "validation.positive") int page,
                                                            @RequestParam(defaultValue = "5") @Positive(message = "validation.positive") int size) {

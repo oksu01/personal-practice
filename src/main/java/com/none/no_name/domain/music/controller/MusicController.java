@@ -43,7 +43,8 @@ public class MusicController{
 
     //음원 개별 조회
     @GetMapping("{music-id}")
-    public ResponseEntity<ApiSingleResponse<MusicInfo>> getMusic(@PathVariable("music-id") @Positive(message = "{validation.positive}") Long musicId, @LoginId Long loginMemberId) {
+    public ResponseEntity<ApiSingleResponse<MusicInfo>> getMusic(@PathVariable("music-id") @Positive(message = "{validation.positive}") Long musicId,
+                                                                 @LoginId Long loginMemberId) {
 
         MusicInfo music = musicService.getMusic(musicId, loginMemberId);
 
@@ -125,6 +126,7 @@ public class MusicController{
         return ResponseEntity.noContent().build();
     }
 
+    //음원 댓글 생성
     @PostMapping("/{music-id}/comments")
     public ResponseEntity<ApiSingleResponse<Void>> createComment(@PathVariable("music-id") @Positive(message = "{validation.positive}") Long musicId,
                                                                  @LoginId Long loginMemberId,
@@ -137,39 +139,21 @@ public class MusicController{
         return ResponseEntity.created(uri).build();
     }
 
-    @GetMapping("/{music-id}/comments")
-    public ResponseEntity<ApiPageResponse<CommentInfo>> getComments(@PathVariable("music-id") @Positive(message = "{validation.positive}") Long musicId,
-                                                                    @LoginId Long loginMemberId,
-                                                                    @Positive(message = "{validation.positive}") @RequestParam(defaultValue = "1") int page,
-                                                                    @Positive(message = "{validation.positive}") @RequestParam(defaultValue = "5") int size,
-                                                                    @RequestParam(defaultValue = "created-date") CommentSort sort,
-                                                                    @RequestParam(required = false) @Positive(message = "{validation.positive}") int like) {
 
-        Page<CommentInfo> comments = musicCommentService.getComments(musicId, page-1, size, sort, like);
 
-        return ResponseEntity.ok(ApiPageResponse.ok(comments, "댓글 전체 조회 성공"));
-    }
+    //음원 태그 등록
+//    @PostMapping("/{music-id}/tag")
+//    public ResponseEntity<ApiSingleResponse<MusicTag>> createMusicTag(@PathVariable("music-id") @Positive(message = "{validation.positive}") Long musicId,
+//                                                                      @LoginId Long loginMemberId,
+//                                                                      @Positive(message = "{validation.positive}") Long tagId) {
+//
+//        MusicTag tag = musicTagService.createMusicTag(tagId, musicId, loginMemberId);
+//
+//        return ResponseEntity.ok(ApiSingleResponse.ok(tag, "태그 생성이 완료되었습니다."));
+//    }
 
-    @PatchMapping("/{music-id}/like")
-    public ResponseEntity<ApiSingleResponse<Boolean>> updateLike(@LoginId Long loginMemberId,
-                                                                 @PathVariable("music-id") @Positive(message = "{validation.positive}") Long musicId) {
-
-        boolean isLiked = musicLikeService.updateLike(loginMemberId, musicId);
-
-        return ResponseEntity.ok(ApiSingleResponse.ok(isLiked, "좋아요 상태가 업데이트 되었습니다."));
-    }
-
-    @PostMapping("/{music-id}/tag")
-    public ResponseEntity<ApiSingleResponse<MusicTag>> createMusicTag(@PathVariable("music-id") @Positive(message = "{validation.positive}") Long musicId,
-                                                                      @LoginId Long loginMemberId,
-                                                                      @Positive(message = "{validation.positive}") Long tagId) {
-
-        MusicTag tag = musicTagService.createMusicTag(tagId, musicId, loginMemberId);
-
-        return ResponseEntity.ok(ApiSingleResponse.ok(tag, "태그 생성이 완료되었습니다."));
-    }
-
-    @PostMapping("/music-id/tags")
+    //태그 등록
+    @PostMapping("/{music-id}/tags")
     public ResponseEntity<Void> createTag(@PathVariable("music-id") @Positive(message = "validation.positive") Long musicId,
                                           @LoginId Long loginMember,
                                           @RequestBody @Valid TagResponseApi response) {

@@ -8,6 +8,7 @@ import com.none.no_name.domain.playList.repository.PlayListRepository;
 import com.none.no_name.domain.playListComment.dto.PlayListCommentInfo;
 import com.none.no_name.domain.playListComment.entity.PlayListComment;
 import com.none.no_name.domain.playListComment.repository.PlayListCommentRepository;
+import com.none.no_name.domain.playListComment.service.sort.PlayListCommentSort;
 import com.none.no_name.global.exception.business.member.MemberAccessDeniedException;
 import com.none.no_name.global.exception.business.musicComment.MusicCommentNotFoundException;
 import com.none.no_name.global.exception.business.playList.PlayListNotFoundException;
@@ -45,12 +46,12 @@ public class PlayListCommentService {
         PlayListComment.updateComment(commentId, loginMemberId, playList);
     }
 
-    public Page<PlayListCommentInfo> getComments(Long playListId, Long loginMemberId, int page, int size, CommentSort sort) {
+    public Page<PlayListCommentInfo> getComments(Long playListId, Long loginMemberId, int page, int size, PlayListCommentSort sort, PlayListCommentInfo playListCommentInfo) {
 
         verifiedMember(loginMemberId);
         PlayList playList = verifiedPlayList(playListId);
 
-        Sort sorting = (sort == CommentSort.Likes)
+        Sort sorting = (sort == PlayListCommentSort.LIKES)
                 ? Sort.by(Sort.Direction.DESC, "like", "createdDate")
                 : Sort.by(Sort.Direction.DESC, "createdDate");
 
@@ -60,9 +61,13 @@ public class PlayListCommentService {
 
         // PlayListComment 객체를 PlayListCommentInfo 객체로 변환
         Page<PlayListCommentInfo> commentInfoPage = comments.map(comment ->
-                PlayListCommentInfo.builder()
-                        .content(comment.getContent())
-                        .build());
+                new PlayListCommentInfo(
+                        comment.getPlayListCommentId(),
+                        comment.getContent(),
+                        comment.getMember().getMemberId(),
+                        comment.getImage(),
+                        comment.getPlayList().getPlayListId())
+        );
 
         return commentInfoPage;
     }

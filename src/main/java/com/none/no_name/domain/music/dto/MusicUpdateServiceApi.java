@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Builder
 @Getter
 @AllArgsConstructor
@@ -14,4 +16,5 @@ public class MusicUpdateServiceApi {
     private int musicTime;
     private String albumCoverImg;
     private String musicUrl;
+    private List<String> tags;
 }

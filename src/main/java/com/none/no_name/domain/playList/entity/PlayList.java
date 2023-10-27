@@ -66,6 +66,7 @@ public class PlayList extends BaseEntity {
 
     public static PlayList createPlayList(Music music, Member member, PlayListCreateApi request) {
         return PlayList.builder()
+                .member(member)
                 .title(request.getTitle())
                 .coverImg(request.getCoverImg())
                 .content(request.getContent())

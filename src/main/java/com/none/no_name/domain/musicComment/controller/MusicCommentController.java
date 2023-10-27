@@ -25,6 +25,21 @@ public class MusicCommentController {
 
     private final MusicCommentService musicCommentService;
 
+
+    //음원 댓글 전체 조회
+    @GetMapping("/{comment-id}")
+    public ResponseEntity<ApiPageResponse<CommentInfo>> getComments(@PathVariable("comment-id") @Positive(message = "{validation.positive}") Long commentId,
+                                                                    @LoginId Long loginMemberId,
+                                                                    @Positive(message = "{validation.positive}") @RequestParam(defaultValue = "1") int page,
+                                                                    @Positive(message = "{validation.positive}") @RequestParam(defaultValue = "5") int size,
+                                                                    @RequestParam(defaultValue = "created-date") CommentSort sort,
+                                                                    @RequestParam(required = false) @Positive(message = "{validation.positive}") int like) {
+
+        Page<CommentInfo> comments = musicCommentService.getComments(commentId, page-1, size, sort, like);
+
+        return ResponseEntity.ok(ApiPageResponse.ok(comments, "댓글 전체 조회 성공"));
+    }
+
     @PatchMapping("/{comment-id}")
     public ResponseEntity<ApiSingleResponse<Void>> updateComment(@PathVariable("comment-id") @Positive(message = "{validation.positive}") Long commentId,
                                                                  @LoginId Long loginMemberId,

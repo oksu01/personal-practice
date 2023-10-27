@@ -24,7 +24,7 @@ public class MusicInfo {
     private int musicLikeCount;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedAt;
-    private List<MusicTag> musicTags;
+    private List<String> tags;
 
     public static MusicInfo of(String artistName,
                                String albumName,
@@ -34,7 +34,7 @@ public class MusicInfo {
                                int musicLikeCount,
                                LocalDateTime createdDate,
                                LocalDateTime modifiedDate,
-                               List<MusicTag> musicTags) {
+                               List<String> tags) {
 
         return MusicInfo.builder()
                 .artistName(artistName)
@@ -45,7 +45,7 @@ public class MusicInfo {
                 .musicLikeCount(musicLikeCount)
                 .createdDate(createdDate)
                 .modifiedAt(modifiedDate)
-                .musicTags(musicTags)
+                .tags(tags)
                 .build();
     }
 }

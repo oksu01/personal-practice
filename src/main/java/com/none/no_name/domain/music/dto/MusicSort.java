@@ -2,6 +2,8 @@ package com.none.no_name.domain.music.dto;
 
 import com.none.no_name.global.base.BaseEnum;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.TypeMismatchException;
+import org.springframework.dao.TypeMismatchDataAccessException;
 
 @AllArgsConstructor
 public enum MusicSort implements BaseEnum {
@@ -21,11 +23,20 @@ public enum MusicSort implements BaseEnum {
 
     @Override
     public String getDescription() {
-        return this.url;
+        return this.description;
     }
 
     public String getSort() {
         return this.sort;
+    }
+
+    public static MusicSort fromUrl(String url) {
+        for (MusicSort musicSort : values()) {
+            if(musicSort.url.equals(url)) {
+                return musicSort;
+            }
+        }
+        throw new TypeMismatchException(url, MusicSort.class);
     }
 }
 
