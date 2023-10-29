@@ -104,11 +104,12 @@ public class Music extends BaseEntity {
         this.likes--;
     }
 
-    public static Music addMusic(Long musicId, MusicInfo musicInfo) {
+    public static Music addMusic(Long musicId, Long playListId, MusicInfo musicInfo) {
         return Music.builder()
                 .musicId(musicId)
                 .artistName(musicInfo.getArtistName())
-                .artistName(musicInfo.getAlbumName())
+                .albumName(musicInfo.getAlbumName())
+                .musicName(musicInfo.getMusicName())
                 .musicTime(musicInfo.getMusicTime())
                 .albumCoverImag(musicInfo.getAlbumCoverImg())
                 .musicUrl(musicInfo.getMusicUri())

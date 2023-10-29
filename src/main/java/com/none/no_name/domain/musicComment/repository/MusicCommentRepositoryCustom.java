@@ -6,8 +6,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface MusicCommentRepositoryCustom {
 
-    Page<MusicComment> findAllByMusicId(Long musicId, int like, Pageable pageable);
-
-    Page<MusicComment> findAllByMusicIdPaging(Long musicId, Pageable pageable);
+//    Page<MusicComment> findAllByMusicId(Long musicId, int like, Pageable pageable);
+//
+//    Page<MusicComment> findAllByMusicIdPaging(Long musicId, Pageable pageable);
 
 }

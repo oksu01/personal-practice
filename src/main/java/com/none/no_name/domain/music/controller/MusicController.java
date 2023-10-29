@@ -64,46 +64,31 @@ public class MusicController{
     }
 
 //    //음원 전체조회(페이징) - 내림차순, 좋아요순, 생성일 순
-    @GetMapping
-    public ResponseEntity<ApiPageResponse<MusicInfo>> getMusics(@Positive(message = "{validation.positive}") Long musicId,
-                                                                @LoginId Long loginMember,
+    @GetMapping("/{music-id}/musics")
+    public ResponseEntity<ApiPageResponse<MusicInfo>> getMusics(@PathVariable("music-id")  @Positive(message = "{validation.positive}") Long musicId,
+                                                                @Positive(message = "{validation.positive}") @LoginId Long memberId,
                                                                 @RequestParam(defaultValue = "1") @Positive(message = "{validation.positive}") int page,
                                                                 @RequestParam(defaultValue = "5") @Positive(message = "{validation.positive}") int size,
                                                                 @RequestParam(defaultValue = "created-date") MusicSort sort) {
 
-        Page<MusicInfo> musics = musicService.getMusics(musicId, page-1, size, sort);
+        Page<MusicInfo> musics = musicService.getMusics(musicId, memberId, page-1, size, sort);
 
         return ResponseEntity.ok(ApiPageResponse.ok(musics, "음원 전체 조회 성공"));
     }
 
     //유저 음원 전체 조회
-    @GetMapping("/like-musics")
-    public ResponseEntity<ApiPageResponse<MusicInfo>> getUserMusics(@Positive(message = "{validation.positive}") Long musicId,
+    @GetMapping("/{music-id}/likes")
+    public ResponseEntity<ApiPageResponse<MusicInfo>> getUserMusics(@PathVariable("music-id") @Positive(message = "{validation.positive}") Long musicId,
                                                                     @LoginId Long loginMember,
                                                                     @RequestParam(defaultValue = "1") @Positive(message = "{validation.positive}") int page,
                                                                     @RequestParam(defaultValue = "5") @Positive(message = "{validation.positive}") int size,
                                                                     @RequestParam(defaultValue = "created-date") MusicSort sort) {
 
-        Page<MusicInfo> userMusics = musicService.getUserMusics(musicId, page-1, size, sort);
+        Page<MusicInfo> userMusics = musicService.getUserMusics(musicId, loginMember, page-1, size, sort);
 
         return ResponseEntity.ok(ApiPageResponse.ok(userMusics, "사용자 음원 조회 성공"));
     }
 
-    //플리 안에 있는 음원 전체 조회
-    @GetMapping("/playlists/{playList-id}")
-    public ResponseEntity<ApiPageResponse<PlayListMusic>> getPlayListMusics(
-            @PathVariable("playList-id") Long playListId,
-            @LoginId Long loginMember,
-            @RequestParam(defaultValue = "1") @Positive(message = "{validation.positive}") int page,
-            @RequestParam(defaultValue = "5") @Positive(message = "{validation.positive}") int size,
-            @RequestParam(defaultValue = "created-date") MusicSort sort
-    ) {
-        Page<PlayListMusic> pageResult = musicService.getPlayListMusics(page - 1, size, playListId, sort);
-
-        ApiPageResponse<PlayListMusic> apiPageResponse = ApiPageResponse.of(pageResult, HttpStatus.OK, "플레이리스트 음원 조회 성공");
-
-        return ResponseEntity.ok(apiPageResponse);
-    }
 
     //음원 수정
     @PatchMapping("/{music-id}")
@@ -139,18 +124,6 @@ public class MusicController{
         return ResponseEntity.created(uri).build();
     }
 
-
-
-    //음원 태그 등록
-//    @PostMapping("/{music-id}/tag")
-//    public ResponseEntity<ApiSingleResponse<MusicTag>> createMusicTag(@PathVariable("music-id") @Positive(message = "{validation.positive}") Long musicId,
-//                                                                      @LoginId Long loginMemberId,
-//                                                                      @Positive(message = "{validation.positive}") Long tagId) {
-//
-//        MusicTag tag = musicTagService.createMusicTag(tagId, musicId, loginMemberId);
-//
-//        return ResponseEntity.ok(ApiSingleResponse.ok(tag, "태그 생성이 완료되었습니다."));
-//    }
 
     //태그 등록
     @PostMapping("/{music-id}/tags")

@@ -3,6 +3,9 @@ package com.none.no_name.domain.musicComment.dto;
 
 import com.none.no_name.global.base.BaseEnum;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.TypeMismatchException;
+
+import javax.xml.stream.events.Comment;
 
 @AllArgsConstructor
 public enum CommentSort implements BaseEnum {
@@ -28,4 +31,15 @@ public enum CommentSort implements BaseEnum {
     public String getSort() {
         return this.sort;
     }
+
+    public static CommentSort fromUrl(String url) {
+        for(CommentSort commentSort : values()) {
+            if(commentSort.url.equals(url)) {
+                return commentSort;
+            }
+        }
+        throw new TypeMismatchException(url, CommentSort.class);
+    }
+
+
 }

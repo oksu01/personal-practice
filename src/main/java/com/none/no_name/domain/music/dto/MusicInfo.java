@@ -18,6 +18,7 @@ public class MusicInfo {
 
     private String artistName;
     private String albumName;
+    private String musicName;
     private Long musicTime;
     private String albumCoverImg;
     private String musicUri;
@@ -28,6 +29,7 @@ public class MusicInfo {
 
     public static MusicInfo of(String artistName,
                                String albumName,
+                               String musicName,
                                Long musicTime,
                                String albumCoverImg,
                                String musicUri,
@@ -39,6 +41,7 @@ public class MusicInfo {
         return MusicInfo.builder()
                 .artistName(artistName)
                 .albumName(albumName)
+                .musicName(musicName)
                 .musicTime(musicTime)
                 .albumCoverImg(albumCoverImg)
                 .musicUri(musicUri)

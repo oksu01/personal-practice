@@ -29,4 +29,6 @@ public class MusicLike extends BaseEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "music_id")
     private Music music;
+
+    private boolean liked;
 }

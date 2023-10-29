@@ -43,6 +43,7 @@ public class MusicService {
         return MusicInfo.of(
                 music.getArtistName(),
                 music.getAlbumName(),
+                music.getMusicName(),
                 music.getMusicTime(),
                 music.getAlbumCoverImag(),
                 music.getMusicUrl(),
@@ -62,17 +63,61 @@ public class MusicService {
         return musicRepository.save(music).getMusicId();
     }
 
-    public Page<MusicInfo> getMusics(Long musicId, int page, int size, MusicSort musicSort) {
-        Sort sort = (musicSort == MusicSort.Likes) ? Sort.by(Sort.Direction.DESC, "like", "createdDate") : Sort.by(Sort.Direction.DESC, "createdDate");
+    public Page<MusicInfo> getMusics(Long musicId, Long loginMember, int page, int size, MusicSort musicSort) {
+
+        verifiedMember(loginMember);
+
+        Sort sort = (musicSort == MusicSort.Likes)
+                ? Sort.by(Sort.Direction.DESC, "like", "createdDate")
+                : Sort.by(Sort.Direction.DESC, "createdDate");
+
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-        Page<Music> musicPage = musicRepositoryImpl.findMusicInfoByMusicId(musicId, pageRequest);
+
+        Page<Music> musicPage = musicRepository.findMusicInfoByMusicId(musicId, pageRequest);
+
+        Page<Music> musicInfoPage = (MusicSort.Likes != null)
+                ? musicRepository.findAllByMusic(musicId, pageRequest, musicSort)
+                : musicRepository.findAllByPaging(musicId, pageRequest);
+
+
+
+        // Page<MusicInfo>를 생성하고 변환 작업을 자동으로 수행합니다.
+
+        return musicPage.map(music -> {
+            return MusicInfo.of(
+                    music.getArtistName(),
+                    music.getAlbumName(),
+                    music.getMusicName(),
+                    music.getMusicTime(),
+                    music.getAlbumCoverImag(),
+                    music.getMusicUrl(),
+                    music.getMusicLikeCount(),
+                    music.getCreatedDate(),
+                    music.getModifiedDate(),
+                    music.getTags()
+            );
+        });
+    }
+
+    public Page<MusicInfo> getUserMusics(Long musicId, Long loginMember, int page, int size, MusicSort musicSort) {
+
+        verifiedMember(loginMember);
+
+        Sort sort = (musicSort == MusicSort.Likes)
+                ? Sort.by(Sort.Direction.DESC, "like", "createdDate")
+                : Sort.by(Sort.Direction.DESC, "createdDate");
+
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        Page<Music> musicPage = musicRepository.findMusicInfoByMusicId(musicId, pageRequest);
 
         // Page<MusicInfo>를 생성하고 변환 작업을 자동으로 수행합니다.
         Page<MusicInfo> musicInfoPage = musicPage.map(music -> {
             return MusicInfo.of(
                     music.getArtistName(),
                     music.getAlbumName(),
+                    music.getMusicName(),
                     music.getMusicTime(),
                     music.getAlbumCoverImag(),
                     music.getMusicUrl(),
@@ -86,32 +131,13 @@ public class MusicService {
         return musicInfoPage;
     }
 
-    public Page<MusicInfo> getUserMusics(Long musicId, int page, int size, MusicSort musicSort) {
-        Sort sort = (musicSort == MusicSort.Likes) ? Sort.by(Sort.Direction.DESC, "like", "createdDate") : Sort.by(Sort.Direction.DESC, "createdDate");
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
+    public Page<PlayListMusic> getPlayListMusics(int page, int size, Long loginMemberId, Long playListId, MusicSort musicSort) {
 
-        Page<Music> musicPage = musicRepositoryImpl.findMusicInfoByMusicId(musicId, pageRequest);
+        verifiedMember(loginMemberId);
 
-        // Page<MusicInfo>를 생성하고 변환 작업을 자동으로 수행합니다.
-        Page<MusicInfo> musicInfoPage = musicPage.map(music -> {
-            return MusicInfo.of(
-                    music.getArtistName(),
-                    music.getAlbumName(),
-                    music.getMusicTime(),
-                    music.getAlbumCoverImag(),
-                    music.getMusicUrl(),
-                    music.getMusicLikeCount(),
-                    music.getCreatedDate(),
-                    music.getModifiedDate(),
-                    music.getTags()
-            );
-        });
-
-        return musicInfoPage;
-    }
-
-    public Page<PlayListMusic> getPlayListMusics(int page, int size, Long playListId, MusicSort musicSort) {
-        Sort sort = (musicSort == MusicSort.Likes) ? Sort.by(Sort.Direction.DESC, "like", "createdDate") : Sort.by(Sort.Direction.DESC, "createdDate");
+        Sort sort = (musicSort == MusicSort.Likes)
+                ? Sort.by(Sort.Direction.DESC, "like", "createdDate")
+                : Sort.by(Sort.Direction.DESC, "createdDate");
 
         // 재생 목록 유효성 검사
         PlayList playList = verifiedPlayList(playListId);
