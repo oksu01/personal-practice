@@ -4,6 +4,7 @@ package com.none.no_name.domain.playList.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class PlayListInfo {
     private Long playListId;
     private Long memberId;
@@ -20,17 +22,4 @@ public class PlayListInfo {
     private int likes;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
-
-    public PlayListRequestApi toService() {
-        return PlayListRequestApi.builder()
-                .playListId(playListId)
-                .memberId(memberId)
-                .title(title)
-                .coverImg(coverImg)
-                .tags(tags)
-                .likes(likes)
-                .createdDate(createdDate)
-                .modifiedDate(modifiedDate)
-                .build();
-    }
 }

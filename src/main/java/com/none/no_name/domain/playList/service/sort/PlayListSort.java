@@ -2,6 +2,7 @@ package com.none.no_name.domain.playList.service.sort;
 
 import com.none.no_name.global.base.BaseEnum;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.TypeMismatchException;
 
 @AllArgsConstructor
 public enum PlayListSort implements BaseEnum {
@@ -26,5 +27,14 @@ public enum PlayListSort implements BaseEnum {
 
     public String getSort() {
         return this.sort;
+    }
+
+    public static PlayListSort fromUrl(String url) {
+        for (PlayListSort playListSort : values()) {
+            if(playListSort.url.equals(url)) {
+                return playListSort;
+            }
+        }
+        throw new TypeMismatchException(url, PlayListSort.class);
     }
 }

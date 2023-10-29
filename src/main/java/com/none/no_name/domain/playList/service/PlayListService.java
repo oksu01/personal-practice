@@ -109,9 +109,9 @@ public class PlayListService {
     public void addMusic(Long musicId, Long playListId, Long loginMemberId, MusicInfo musicInfo) {
 
         verifiedMember(loginMemberId);
-        verifiedPlayList(playListId);
+//        verifiedPlayList(playListId);
 
-        Music music = Music.addMusic(musicId, musicInfo);
+        Music music = Music.addMusic(musicId, playListId, musicInfo);
 
         musicRepository.save(music);
     }

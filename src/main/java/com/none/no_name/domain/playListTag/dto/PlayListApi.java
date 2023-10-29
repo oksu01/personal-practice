@@ -4,10 +4,12 @@ import com.none.no_name.domain.playList.entity.PlayList;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class PlayListApi {
     private Long tagId;

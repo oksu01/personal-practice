@@ -19,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class MusicLikeService {
@@ -36,11 +38,12 @@ public class MusicLikeService {
 
         if(!isLiked) {
             liked(loginMemberId, musicId);
-            return true;
+
         } else {
             hated(loginMemberId, musicId);
-            return false;
         }
+
+        return !isLiked;
     }
 
     private void liked(Long loginMemberId, Long musicId) {
@@ -113,8 +116,11 @@ public class MusicLikeService {
         return musics;
     }
 
-    private Boolean isLiked(Long loginMemberId) {
-        return memberRepository.checkMemberLikedMusic(loginMemberId).orElseThrow(MusicLikeValidationException::new);
+    private Boolean isLiked(Long musicId) {
+
+        Optional<Boolean> likedStatus = memberRepository.checkMemberLikedMusic(musicId);
+
+        return likedStatus.orElse(false);
     }
 
     public Member verifiedMember(Long loginMember) {
