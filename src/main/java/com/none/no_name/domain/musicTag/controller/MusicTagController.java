@@ -4,6 +4,7 @@ package com.none.no_name.domain.musicTag.controller;
 import com.none.no_name.domain.musicTag.dto.TagInfo;
 import com.none.no_name.domain.musicTag.entity.MusicTag;
 import com.none.no_name.domain.musicTag.service.MusicTagService;
+import com.none.no_name.domain.tag.entity.Tag;
 import com.none.no_name.global.annotation.LoginId;
 import com.none.no_name.global.base.BaseEntity;
 import com.none.no_name.global.response.ApiPageResponse;
@@ -23,13 +24,25 @@ public class MusicTagController {
     private final MusicTagService musicTagService;
 
 
+    //태그 등록
+    @PostMapping("/{music-id}")
+    public ResponseEntity<Void> createMusicTag(@Positive(message = "validation.positive") @PathVariable("music-id")Long musicId,
+                                               @LoginId Long loginMember,
+                                               @RequestBody TagInfo tagInfo) {
+
+        musicTagService.createMusicTag(musicId, loginMember, tagInfo);
+
+        return ResponseEntity.noContent().build();
+    }
+
+
     @GetMapping("/{music-id}")
-    public ResponseEntity<ApiPageResponse<TagInfo>> getTag(@Positive(message = "validation.positive") @PathVariable("music-id") Long musicId,
+    public ResponseEntity<ApiPageResponse<TagInfo>> getMusicTag(@Positive(message = "validation.positive") @PathVariable("music-id") Long musicId,
                                                            @LoginId Long loginMember,
                                                            @RequestParam(defaultValue = "1") @Positive(message = "validation.positive") int page,
                                                            @RequestParam(defaultValue = "5") @Positive(message = "validation.positive") int size) {
 
-        Page<TagInfo> tag = musicTagService.getTags(musicId, loginMember, page-1, size);
+        Page<TagInfo> tag = musicTagService.getMusicTags(musicId, loginMember, page-1, size);
 
         return ResponseEntity.ok(ApiPageResponse.ok(tag, "태그 조회가 완료되었습니다."));
     }

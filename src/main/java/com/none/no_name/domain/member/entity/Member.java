@@ -43,6 +43,8 @@ public class Member extends BaseEntity {
 	@OneToMany(mappedBy = "member", cascade = {CascadeType.ALL})
 	private List<PlayListLike> likedPlayLists = new ArrayList<>();
 
+
+
 	public static Member createMember(String email, String password, String nickname) {
 		return Member.builder()
 			.email(email)

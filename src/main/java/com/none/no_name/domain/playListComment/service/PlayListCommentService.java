@@ -26,24 +26,24 @@ public class PlayListCommentService {
     private final MemberRepository memberRepository;
     private final PlayListRepository playListRepository;
 
-    public void createComment(Long playListId, Long loginMemberId) {
+    public void createComment(Long playListId, Long loginMemberId, PlayListCommentInfo playListCommentInfo) {
 
         verifiedMember(loginMemberId);
 
-        PlayList playList = verifiedPlayList(playListId);
+        verifiedPlayList(playListId);
 
-        PlayListComment comment = PlayListComment.createComment(playListId, loginMemberId, playList);
+        PlayListComment comment = PlayListComment.createComment(playListId, loginMemberId, playListCommentInfo);
 
         playListCommentRepository.save(comment);
     }
 
-    public void updateComment(Long commentId, Long loginMemberId, Long playListId) {
+    public void updateComment(Long commentId, Long loginMemberId, Long playListId, PlayListCommentInfo playListCommentInfo) {
 
-        PlayList playList = verifiedPlayList(playListId);
+        verifiedPlayList(playListId);
         verifiedComment(commentId);
         verifiedMember(loginMemberId);
 
-        PlayListComment.updateComment(commentId, loginMemberId, playList);
+        PlayListComment.updateComment(commentId, loginMemberId, playListCommentInfo);
     }
 
     public Page<PlayListCommentInfo> getComments(Long playListId, Long loginMemberId, int page, int size, PlayListCommentSort sort, PlayListCommentInfo playListCommentInfo) {
@@ -63,6 +63,7 @@ public class PlayListCommentService {
         Page<PlayListCommentInfo> commentInfoPage = comments.map(comment ->
                 new PlayListCommentInfo(
                         comment.getPlayListCommentId(),
+                        comment.getName(),
                         comment.getContent(),
                         comment.getMember().getMemberId(),
                         comment.getImage(),

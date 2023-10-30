@@ -32,8 +32,11 @@ public class PlayListTagController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping
-    public ResponseEntity<ApiPageResponse<PlayListTagInfo>> getTags(@Positive(message = "validation.positive") Long tagId,
+
+    //
+    @GetMapping("/{tag-id}")
+    public ResponseEntity<ApiPageResponse<PlayListTagInfo>> getTags(@PathVariable("tag-id") @Positive(message = "validation.positive") Long tagId,
+                                                                    @Positive(message = "validation.positive")
                                                                     @LoginId Long loginMember,
                                                                     @RequestParam(defaultValue = "1") @Positive(message = "validation.positive") int page,
                                                                     @RequestParam(defaultValue = "5") @Positive(message = "validation.positive") int size) {

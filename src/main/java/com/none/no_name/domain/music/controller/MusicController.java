@@ -8,7 +8,6 @@ import com.none.no_name.domain.musicComment.dto.CommentSort;
 import com.none.no_name.domain.musicComment.service.MusicCommentService;
 import com.none.no_name.domain.musicLike.service.MusicLikeService;
 import com.none.no_name.domain.musicTag.entity.MusicTag;
-import com.none.no_name.domain.musicTag.service.MusicTagService;
 import com.none.no_name.domain.playListMusic.entity.PlayListMusic;
 import com.none.no_name.domain.tag.dto.TagResponseApi;
 import com.none.no_name.domain.tag.service.TagService;
@@ -37,7 +36,6 @@ public class MusicController{
     private final MusicService musicService;
     private final MusicCommentService musicCommentService;
     private final MusicLikeService musicLikeService;
-    private final MusicTagService musicTagService;
     private final TagService tagService;
 
 
@@ -54,9 +52,9 @@ public class MusicController{
     //음원 등록
     @PostMapping
     public ResponseEntity<ApiSingleResponse<Void>> createMusic(@LoginId Long loginMemberId,
-                                                               @RequestBody @Valid MusicCreateApi request) {
+                                                               @RequestBody @Valid MusicCreateApi response) {
 
-        Long musicId = musicService.createMusic(loginMemberId, request.toService());
+        Long musicId = musicService.createMusic(loginMemberId, response.toService());
 
         URI uri = URI.create("/music/" + musicId);
 
@@ -64,34 +62,20 @@ public class MusicController{
     }
 
 //    //음원 전체조회(페이징) - 내림차순, 좋아요순, 생성일 순
-    @GetMapping("/{music-id}/musics")
-    public ResponseEntity<ApiPageResponse<MusicInfo>> getMusics(@PathVariable("music-id")  @Positive(message = "{validation.positive}") Long musicId,
-                                                                @Positive(message = "{validation.positive}") @LoginId Long memberId,
+    @GetMapping
+    public ResponseEntity<ApiPageResponse<MusicInfo>> getMusics(@Positive(message = "{validation.positive}") @LoginId Long loginMember,
                                                                 @RequestParam(defaultValue = "1") @Positive(message = "{validation.positive}") int page,
                                                                 @RequestParam(defaultValue = "5") @Positive(message = "{validation.positive}") int size,
                                                                 @RequestParam(defaultValue = "created-date") MusicSort sort) {
 
-        Page<MusicInfo> musics = musicService.getMusics(musicId, memberId, page-1, size, sort);
+        Page<MusicInfo> musics = musicService.getMusics(loginMember, page-1, size, sort);
 
         return ResponseEntity.ok(ApiPageResponse.ok(musics, "음원 전체 조회 성공"));
     }
 
-    //유저 음원 전체 조회
-    @GetMapping("/{music-id}/likes")
-    public ResponseEntity<ApiPageResponse<MusicInfo>> getUserMusics(@PathVariable("music-id") @Positive(message = "{validation.positive}") Long musicId,
-                                                                    @LoginId Long loginMember,
-                                                                    @RequestParam(defaultValue = "1") @Positive(message = "{validation.positive}") int page,
-                                                                    @RequestParam(defaultValue = "5") @Positive(message = "{validation.positive}") int size,
-                                                                    @RequestParam(defaultValue = "created-date") MusicSort sort) {
-
-        Page<MusicInfo> userMusics = musicService.getUserMusics(musicId, loginMember, page-1, size, sort);
-
-        return ResponseEntity.ok(ApiPageResponse.ok(userMusics, "사용자 음원 조회 성공"));
-    }
-
 
     //음원 수정
-    @PatchMapping("/{music-id}")
+    @PatchMapping("/{music-id}/add")
     public ResponseEntity <ApiSingleResponse<Void>> updateMusic(@PathVariable("music-id") @Positive(message = "{validation.positive}") Long musicId,
                                                                 @LoginId Long loginMemberId,
                                                                 @RequestBody @Valid MusicUpdateControllerApi request) {
@@ -135,5 +119,7 @@ public class MusicController{
 
         return ResponseEntity.noContent().build();
     }
+
+
 }
 

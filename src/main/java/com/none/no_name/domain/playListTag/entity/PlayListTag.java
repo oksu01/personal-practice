@@ -36,7 +36,7 @@ public class PlayListTag extends BaseEntity {
     @ManyToOne(fetch = LAZY)
     private PlayList playList;
 
-    public static PlayListTag createTag(Long playListTagId, PlayListTagInfo request) {
+    public static PlayListTag createTag(PlayListTagInfo request) {
         return PlayListTag.builder()
                 .playList(request.getPlayList())
                 .build();

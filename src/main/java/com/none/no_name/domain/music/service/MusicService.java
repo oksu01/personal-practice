@@ -1,6 +1,9 @@
 package com.none.no_name.domain.music.service;
 
+import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.member.repository.MemberRepository;
+import com.none.no_name.domain.memberMusic.entity.MemberMusic;
+import com.none.no_name.domain.memberMusic.repository.MemberMusicRepository;
 import com.none.no_name.domain.music.dto.CreateMusic;
 import com.none.no_name.domain.music.dto.MusicInfo;
 import com.none.no_name.domain.music.dto.MusicSort;
@@ -9,9 +12,12 @@ import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.domain.music.repository.MusicRepository;
 import com.none.no_name.domain.music.repository.MusicRepositoryCustom;
 import com.none.no_name.domain.music.repository.MusicRepositoryImpl;
+import com.none.no_name.domain.musicTag.entity.MusicTag;
 import com.none.no_name.domain.playList.entity.PlayList;
 import com.none.no_name.domain.playList.repository.PlayListRepository;
 import com.none.no_name.domain.playListMusic.entity.PlayListMusic;
+import com.none.no_name.domain.playListMusic.repository.PlayListMusicRepository;
+import com.none.no_name.domain.tag.entity.Tag;
 import com.none.no_name.global.exception.business.member.MemberAccessDeniedException;
 import com.none.no_name.global.exception.business.music.MusicNotFoundException;
 import com.none.no_name.global.exception.business.playList.PlayListNotFoundException;
@@ -23,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -31,8 +39,9 @@ public class MusicService {
 
     private final MemberRepository memberRepository;
     private final MusicRepository musicRepository;
+    private final MemberMusicRepository memberMusicRepository;
     private final PlayListRepository playListRepository;
-    private final MusicRepositoryImpl musicRepositoryImpl;
+    private final PlayListMusicRepository playListMusicRepository;
 
     public MusicInfo getMusic(Long musicId, Long loginMemberId) {
 
@@ -63,7 +72,7 @@ public class MusicService {
         return musicRepository.save(music).getMusicId();
     }
 
-    public Page<MusicInfo> getMusics(Long musicId, Long loginMember, int page, int size, MusicSort musicSort) {
+    public Page<MusicInfo> getMusics(Long loginMember, int page, int size, MusicSort musicSort) {
 
         verifiedMember(loginMember);
 
@@ -73,16 +82,7 @@ public class MusicService {
 
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-
-        Page<Music> musicPage = musicRepository.findMusicInfoByMusicId(musicId, pageRequest);
-
-        Page<Music> musicInfoPage = (MusicSort.Likes != null)
-                ? musicRepository.findAllByMusic(musicId, pageRequest, musicSort)
-                : musicRepository.findAllByPaging(musicId, pageRequest);
-
-
-
-        // Page<MusicInfo>를 생성하고 변환 작업을 자동으로 수행합니다.
+        Page<Music> musicPage = musicRepository.findAll(pageRequest);
 
         return musicPage.map(music -> {
             return MusicInfo.of(
@@ -100,7 +100,7 @@ public class MusicService {
         });
     }
 
-    public Page<MusicInfo> getUserMusics(Long musicId, Long loginMember, int page, int size, MusicSort musicSort) {
+    public Page<MusicInfo> getUserMusics(Long loginMember, int page, int size, MusicSort musicSort) {
 
         verifiedMember(loginMember);
 
@@ -110,28 +110,35 @@ public class MusicService {
 
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-        Page<Music> musicPage = musicRepository.findMusicInfoByMusicId(musicId, pageRequest);
+        Page<MemberMusic> musicPage = memberMusicRepository.findAll(pageRequest);
 
-        // Page<MusicInfo>를 생성하고 변환 작업을 자동으로 수행합니다.
-        Page<MusicInfo> musicInfoPage = musicPage.map(music -> {
+        Page<MusicInfo> musicInfoPage = musicPage.map(memberMusic -> {
+            Music music = memberMusic.getMusic();
+
+            // 태그 정보 추출
+            List<String> tags = music.getMusicTags().stream()
+                    .map(musicTag -> musicTag.getTag().getName())
+                    .collect(Collectors.toList());
+
             return MusicInfo.of(
-                    music.getArtistName(),
-                    music.getAlbumName(),
-                    music.getMusicName(),
-                    music.getMusicTime(),
-                    music.getAlbumCoverImag(),
-                    music.getMusicUrl(),
-                    music.getMusicLikeCount(),
-                    music.getCreatedDate(),
-                    music.getModifiedDate(),
-                    music.getTags()
+                    memberMusic.getMusic().getArtistName(),
+                    memberMusic.getMusic().getAlbumName(),
+                    memberMusic.getMusic().getMusicName(),
+                    memberMusic.getMusic().getMusicTime(),
+                    memberMusic.getMusic().getAlbumCoverImag(),
+                    memberMusic.getMusic().getMusicUrl(),
+                    memberMusic.getMusic().getMusicLikeCount(),
+                    memberMusic.getCreatedDate(),
+                    memberMusic.getModifiedDate(),
+                    tags
             );
         });
 
         return musicInfoPage;
     }
 
-    public Page<PlayListMusic> getPlayListMusics(int page, int size, Long loginMemberId, Long playListId, MusicSort musicSort) {
+public Page<PlayListMusic> getPlayListMusics(Long memberId, int page, int size, Long loginMemberId, MusicSort musicSort) {
+
 
         verifiedMember(loginMemberId);
 
@@ -139,21 +146,22 @@ public class MusicService {
                 ? Sort.by(Sort.Direction.DESC, "like", "createdDate")
                 : Sort.by(Sort.Direction.DESC, "createdDate");
 
-        // 재생 목록 유효성 검사
-        PlayList playList = verifiedPlayList(playListId);
+    PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-        // 재생 목록에 속한 음악 목록 가져오기
-        List<PlayListMusic> musics = playList.getPlayListMusics();
+    Optional<PlayList> playListOptional = playListRepository.findById(memberId);
+    if (playListOptional.isPresent()) {
+        PlayList playList = playListOptional.get();
+        List<PlayListMusic> playListMusics = playList.getPlayListMusics();
+        int start = (int) pageRequest.getOffset();
+        int end = Math.min((start + pageRequest.getPageSize()), playListMusics.size());
 
-        // 페이징 처리 및 정렬
-        Pageable pageable = PageRequest.of(page, size, sort);
-        int fromIndex = pageable.getPageSize() * page;
-        int toIndex = Math.min(fromIndex + pageable.getPageSize(), musics.size());
-        List<PlayListMusic> pagedMusics = musics.subList(fromIndex, toIndex);
+        List<PlayListMusic> paginatedList = playListMusics.subList(start, end);
 
-        // 페이지 정보와 함께 결과를 반환
-        return new PageImpl<>(pagedMusics, pageable, musics.size());
+        return new PageImpl<>(paginatedList, pageRequest, playListMusics.size());
+    } else {
+        throw new MusicNotFoundException();
     }
+}
 
     public void updateMusic(Long musicId, Long loginMemberId, MusicUpdateServiceApi request) {
 

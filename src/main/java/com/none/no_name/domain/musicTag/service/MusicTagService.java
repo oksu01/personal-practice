@@ -30,24 +30,21 @@ public class MusicTagService {
     private final MemberRepository memberRepository;
     private final MusicRepository musicRepository;
 
-    public MusicTag createMusicTag(Long tagId, Long musicId, Long loginMember) {
+    public TagInfo createMusicTag(Long musicId, Long loginMember, TagInfo tagInfo) {
 
-        Member member = verifiedMember(loginMember);
-        Music music = verifiedMusic(musicId);
-        MusicTag musicTag = verifiedTag(tagId);
+        verifiedMember(loginMember);
+        verifiedMusic(musicId);
 
-        MusicTag tag = MusicTag.builder()
-                .music(musicTag.getMusic())
-                .name(musicTag.getName())
-                .tag(musicTag.getTag())
+        TagInfo tags = TagInfo.builder()
+                .musicId(tagInfo.getMusicId())
+                .name(tagInfo.getName())
+                .tags(tagInfo.getTags())
                 .build();
 
-        musicTagRepository.save(tag);
-
-        return tag;
+        return tags;
     }
 
-    public Page<TagInfo> getTags(Long musicId,
+    public Page<TagInfo> getMusicTags(Long musicId,
                                  Long loginMemberId,
                                  int page,
                                  int size) {
@@ -63,7 +60,7 @@ public class MusicTagService {
 
         // MusicTag를 TagInfo로 매핑
         List<TagInfo> tagInfos = musicTags.stream()
-                .map(musicTag -> new TagInfo(musicTag.getTag().getName()))
+                .map(musicTag -> new TagInfo())
                 .collect(Collectors.toList());
 
         // Page 객체를 생성하여 반환

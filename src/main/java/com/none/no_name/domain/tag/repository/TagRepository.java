@@ -5,8 +5,10 @@ import com.none.no_name.domain.tag.entity.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 public interface TagRepository extends JpaRepository<Tag, Long>, TagRepositoryCustom {
 
-    Page<Tag> findByTagId(Long tagId, Pageable pageable);
+    @Query("select m from Music m where m.musicId = :musicId")
+    Page<Tag> findByMusicId(Long tagId, Pageable pageable);
 }
