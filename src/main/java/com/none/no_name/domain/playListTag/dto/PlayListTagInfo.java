@@ -11,7 +11,6 @@ import lombok.Getter;
 @Builder
 public class PlayListTagInfo {
         private Long tagId;
-        private Long musicId;
         private String name;
         private PlayList playList;
 }

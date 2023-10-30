@@ -2,6 +2,7 @@ package com.none.no_name.domain.playListComment.entity;
 
 import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.playList.entity.PlayList;
+import com.none.no_name.domain.playListComment.dto.PlayListCommentInfo;
 import com.none.no_name.global.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,15 +38,21 @@ public class PlayListComment extends BaseEntity {
 
     private String content;
 
-    public static PlayListComment createComment(Long playListId, Long loginMemberId, PlayList playList) {
-        return PlayListComment.builder()
-                .content(playList.getContent())
-                .build();
+    public static PlayListComment createComment(Long playListId, Long loginMemberId, PlayListCommentInfo playListCommentInfo) {
+                return PlayListComment.builder()
+                        .content(playListCommentInfo.getContent())
+                        .name(playListCommentInfo.getName())
+                        .image(playListCommentInfo.getImage())
+                        .build();
+
+
     }
 
-    public static void updateComment(Long commentId, Long loginMemberId, PlayList playList) {
+    public static void updateComment(Long commentId, Long loginMemberId, PlayListCommentInfo playListCommentInfo) {
         PlayListComment.builder()
-                .content(playList.getContent())
+                .content(playListCommentInfo.getContent())
+                .name(playListCommentInfo.getName())
+                .image(playListCommentInfo.getImage())
                 .build();
     }
 }

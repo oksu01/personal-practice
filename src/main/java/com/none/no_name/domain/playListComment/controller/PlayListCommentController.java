@@ -22,17 +22,18 @@ public class PlayListCommentController {
 
     private final PlayListCommentService playListCommentService;
 
-    @PatchMapping("/{comment-id}")
+    @PatchMapping("/{comment-id}/{playList-id}")
     public ResponseEntity<Void> updateComment(@PathVariable("comment-id") @Positive(message = "validation.positive") Long commentId,
                                               @LoginId Long loginMemberId,
-                                              @Positive(message = "validation.positive") Long playListId) {
+                                              @PathVariable("playList-id") @Positive(message = "validation.positive") Long playListId,
+                                              @RequestBody PlayListCommentInfo playListCommentInfo) {
 
-        playListCommentService.updateComment(commentId, loginMemberId, playListId);
+        playListCommentService.updateComment(commentId, loginMemberId, playListId, playListCommentInfo);
 
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/comment-id")
+    @DeleteMapping("/{comment-id}")
     public ResponseEntity<Void> deleteComment(@PathVariable("comment-id") @Positive(message = "validation.positive") Long commentId,
                                               @LoginId Long loginMemberId) {
 

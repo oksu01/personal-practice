@@ -31,16 +31,15 @@ public class TagController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{tag-id}/tags")
-    public ResponseEntity<ApiPageResponse<TagInfo>> getTags(@PathVariable("tag-id") @Positive(message = "validation.positive") Long tagId,
-                                                            @LoginId Long loginMemberId,
-                                                            @RequestParam(defaultValue = "1") @Positive(message = "validation.positive") int page,
-                                                            @RequestParam(defaultValue = "5") @Positive(message = "validation.positive") int size,
-                                                            @RequestBody TagInfo tagInfo) {
+    @PatchMapping("/{tag-id}")
+    public ResponseEntity<Void> updateTag(@PathVariable("tag-id") @Positive(message = "validation.positive") Long tagId,
+                                          @LoginId Long loginMemberId,
+                                          @RequestBody TagInfo tagInfo) {
 
-        Page<TagInfo> tags = tagService.getTags(tagId, loginMemberId, page-1, size, tagInfo);
+        tagService.updateTag(tagId, loginMemberId, tagInfo);
 
-        return ResponseEntity.ok(ApiPageResponse.ok(tags, "태그 조회가 완료되었습니다."));
+        return ResponseEntity.noContent().build();
     }
+
 }
 

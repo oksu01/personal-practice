@@ -2,6 +2,8 @@ package com.none.no_name.domain.tag.service;
 
 
 import com.none.no_name.domain.member.repository.MemberRepository;
+import com.none.no_name.domain.music.entity.Music;
+import com.none.no_name.domain.music.repository.MusicRepository;
 import com.none.no_name.domain.musicTag.dto.TagInfo;
 import com.none.no_name.domain.tag.dto.TagRequestApi;
 import com.none.no_name.domain.tag.entity.Tag;
@@ -18,6 +20,7 @@ public class TagService {
 
     private final TagRepository tagRepository;
     private final MemberRepository memberRepository;
+    private final MusicRepository musicRepository;
 
     public void createTag(Long musicId, Long loginMember, TagRequestApi request) {
 
@@ -33,18 +36,26 @@ public class TagService {
         tagRepository.deleteById(tagId);
     }
 
-    public Page<TagInfo> getTags(Long tagId, Long loginMemberId, int page, int size, TagInfo tagInfo) {
+    public void updateTag(Long tagId, Long loginMemberId, TagInfo tagInfo) {
+
+        Tag.updateTag(tagId, loginMemberId, tagInfo);
+    }
+
+    public Page<TagInfo> getTags(Long musicId, Long loginMemberId, int page, int size) {
 
         verifiedMember(loginMemberId);
+
         PageRequest pageRequest = PageRequest.of(page, size);
 
-        Page<Tag> tags = tagRepository.findByTagId(tagId, pageRequest);
+        // 4. 음원에 연결된 댓글 페이지 조회
+        Page<Music> commentPage = memberRepository.findMusicByMemberId(musicId, pageRequest);
 
-        Page<TagInfo> tagInfoPage = tags.map(tag -> TagInfo.builder()
-                .tagId(tagId)
-                .musicId(tagInfo.getMusicId())
-                .name(tagInfo.getName())
-                .build());
+        Page<TagInfo> tagInfoPage = commentPage.map(music -> {
+            return TagInfo.builder()
+                    .musicId(music.getMusicId())
+                    .tags(music.getTags())
+                    .build();
+        });
 
         return tagInfoPage;
     }

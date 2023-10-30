@@ -6,13 +6,19 @@ import com.none.no_name.domain.playList.repository.PlayListRepository;
 import com.none.no_name.domain.playListTag.dto.PlayListTagInfo;
 import com.none.no_name.domain.playListTag.entity.PlayListTag;
 import com.none.no_name.domain.playListTag.repository.PlayListTagRepository;
+import com.none.no_name.domain.tag.entity.Tag;
+import com.none.no_name.domain.tag.repository.TagRepository;
 import com.none.no_name.global.exception.business.member.MemberAccessDeniedException;
 import com.none.no_name.global.exception.business.playList.PlayListNotFoundException;
+import com.none.no_name.global.exception.business.tag.TagNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Service
@@ -22,13 +28,14 @@ public class PlayListTagService {
     private final PlayListTagRepository playListTagRepository;
     private final MemberRepository memberRepository;
     private final PlayListRepository playListRepository;
+    private final TagRepository tagRepository;
 
     public void createTag(Long playListId, Long loginMember, PlayListTagInfo request) {
 
         verifiedMember(loginMember);
         verifiedPlayList(playListId);
 
-        PlayListTag playListTag = PlayListTag.createTag(playListId, request);
+        PlayListTag playListTag = PlayListTag.createTag(request);
 
         playListTagRepository.save(playListTag);
     }
@@ -46,11 +53,20 @@ public class PlayListTagService {
 
         PageRequest pageRequest = PageRequest.of(page, size);
 
-        Page<PlayListTag> tags = playListTagRepository.findByPlayListTagId(tagId, pageRequest);
+        Optional<Tag> tagOptional = tagRepository.findById(tagId);
 
-        Page<PlayListTagInfo> tagInfoPage = tags.map(tagToTagInfo);
+        if (tagOptional.isPresent()) {
+            Tag tag = tagOptional.get();
 
-        return tagInfoPage;
+            PlayListTagInfo tagInfo = PlayListTagInfo.builder()
+                    .tagId(tag.getTagId())
+                    .name(tag.getName())
+                    .build();
+
+            return new PageImpl<>(Collections.singletonList(tagInfo), pageRequest, 1);
+        } else {
+            throw new TagNotFoundException();
+        }
     }
 
     public void verifiedMember(Long loginMember) {
@@ -62,14 +78,5 @@ public class PlayListTagService {
 
         playListRepository.findById(playListId).orElseThrow(PlayListNotFoundException::new);
     }
-
-    // PlayListTag에서 PlayListTagInfo로 변환하는 함수
-    private static Function<PlayListTag, PlayListTagInfo> tagToTagInfo = tag -> new PlayListTagInfo(
-            tag.getPlayListTagId(),
-            tag.getTag().getTagId(),
-            tag.getName(),
-            tag.getPlayList()
-    );
-
-    }
+}
 

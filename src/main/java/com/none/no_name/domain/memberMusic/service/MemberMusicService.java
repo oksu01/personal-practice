@@ -5,6 +5,8 @@ import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.member.repository.MemberRepository;
 import com.none.no_name.domain.memberMusic.entity.MemberMusic;
 import com.none.no_name.domain.memberMusic.repository.MemberMusicRepository;
+import com.none.no_name.domain.music.dto.CreateMusic;
+import com.none.no_name.domain.music.dto.MusicInfo;
 import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.domain.music.repository.MusicRepository;
 import com.none.no_name.global.exception.business.member.MemberAccessDeniedException;
@@ -20,14 +22,14 @@ public class MemberMusicService {
     private final MemberRepository memberRepository;
     private final MusicRepository musicRepository;
 
-    public void createMemberMusic(Long loginMemberId, Long musicId) {
+    public Long createMemberMusic(Long loginMemberId, Long musicId, CreateMusic createMusic) {
 
         Member member = verifiedMember(loginMemberId);
         Music music = verifiedMusic(musicId);
 
-        MemberMusic memberMusic = MemberMusic.createMemberMusic(member, music);
+        MemberMusic memberMusic = MemberMusic.createMemberMusic(member, music, createMusic);
 
-        memberMusicRepository.save(memberMusic);
+        return memberMusicRepository.save(memberMusic).getMemberMusicId();
     }
 
     public void deleteMemberMusic(Long loginMember, Long musicId) {

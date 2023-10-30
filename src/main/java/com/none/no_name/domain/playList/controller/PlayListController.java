@@ -132,9 +132,10 @@ public class PlayListController {
     //재생 목록에 댓글 생성
     @PostMapping("{playList-id}/comments")
     public ResponseEntity<Void> createComment(@PathVariable("playList-id") @Positive(message = "validation.positive") Long playListId,
-                                              @LoginId Long loginMemberId) {
+                                              @LoginId Long loginMemberId,
+                                              @RequestBody PlayListCommentInfo playListCommentInfo) {
 
-        playListCommentService.createComment(playListId, loginMemberId);
+        playListCommentService.createComment(playListId, loginMemberId, playListCommentInfo);
 
         return ResponseEntity.noContent().build();
     }
@@ -167,18 +168,16 @@ public class PlayListController {
     }
 
     //재생 목록 안에 있는 음원 전체 조회
-    @GetMapping("/{playList-id}/playLists")
+    @GetMapping("/{member-id}")
     public ResponseEntity<ApiPageResponse<PlayListMusic>> getPlayListMusics(
-            @PathVariable("playList-id") @Positive Long playListId,
+            @PathVariable("member-id") @Positive(message = "{validation.positive}") Long memberId,
             @Positive(message = "{validation.positive}") @LoginId Long loginMember,
             @RequestParam(defaultValue = "1") @Positive(message = "{validation.positive}") int page,
             @RequestParam(defaultValue = "5") @Positive(message = "{validation.positive}") int size,
-            @RequestParam(defaultValue = "created-date") MusicSort sort
-    ) {
-        Page<PlayListMusic> pageResult = musicService.getPlayListMusics(page - 1, size, loginMember, playListId, sort);
+            @RequestParam(defaultValue = "created-date") MusicSort sort) {
 
-        ApiPageResponse<PlayListMusic> apiPageResponse = ApiPageResponse.of(pageResult, HttpStatus.OK, "플레이리스트 음원 조회 성공");
+        Page<PlayListMusic> pageResult = musicService.getPlayListMusics(memberId, page - 1, size, loginMember, sort);
 
-        return ResponseEntity.ok(apiPageResponse);
+        return ResponseEntity.ok(ApiPageResponse.ok(pageResult, "음원 전체 조회가 완료되었습니다."));
     }
 }

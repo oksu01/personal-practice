@@ -1,6 +1,7 @@
 package com.none.no_name.domain.memberMusic.entity;
 
 import com.none.no_name.domain.member.entity.Member;
+import com.none.no_name.domain.music.dto.CreateMusic;
 import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.global.base.BaseEntity;
 import jakarta.persistence.*;
@@ -30,7 +31,7 @@ public class MemberMusic extends BaseEntity {
     @JoinColumn(name = "music_id")
     private Music music;
 
-    public static MemberMusic createMemberMusic(Member member, Music music) {
+    public static MemberMusic createMemberMusic(Member member, Music music, CreateMusic createMusic) {
 
         return MemberMusic.builder()
                 .member(member)

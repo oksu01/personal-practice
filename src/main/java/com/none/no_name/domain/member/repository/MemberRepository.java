@@ -3,6 +3,8 @@ package com.none.no_name.domain.member.repository;
 import java.util.Optional;
 
 import com.none.no_name.domain.music.entity.Music;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.none.no_name.domain.member.entity.Member;
@@ -13,7 +15,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
 	Optional<Member> findByEmail(String email);
 
-
 	@Query("select m from MusicLike m where m.music.musicId =:musicId")
 	Optional<Boolean> checkMemberLikedMusic(@Param("musicId") Long musicId);
+
+	@Query("select m from Member m where m.memberId = :musicId")
+	Page<Music> findMusicByMemberId(@Param("musicId") Long musicId, Pageable pageable);
+
 }

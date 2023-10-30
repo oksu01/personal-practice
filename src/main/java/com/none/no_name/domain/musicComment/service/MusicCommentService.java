@@ -42,7 +42,7 @@ public class MusicCommentService {
         return musicComment.getMusicCommentId();
     }
 
-    public Page<CommentInfo> getComments(Long musicId, int page, int size, CommentSort commentSort, int like) {
+    public Page<CommentInfo> getComments(int page, int size, CommentSort commentSort) {
 
         Sort sort = (commentSort == CommentSort.Likes)
                 ? Sort.by(Sort.Direction.DESC, "like", "createdDate")
@@ -50,21 +50,16 @@ public class MusicCommentService {
 
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-        Page<MusicComment> comments =  musicCommentRepository.findByMusicId(musicId, pageRequest);
+        Page<MusicComment> comments = musicCommentRepository.findAll(pageRequest);
 
-        Page<CommentInfo> commentInfos = comments.map(commentMusic -> {
-            String content = commentMusic.getContent(); // 댓글 내용 가져오기(나중에 작성자랑, 좋아요 수 가져오는 로직 추가해보기)
+        Page<CommentInfo> commentInfoPage = comments.map(comment -> CommentInfo.builder()
+                .commentId(comment.getMusicCommentId())
+                .content(comment.getContent())
+                .memberId(comment.getMember().getMemberId())
+                .musicId(comment.getMusic().getMusicId())
+                .build());
 
-            CommentInfo commentInfo =
-                    CommentInfo.builder()
-                    .content(content)
-                    .build();
-
-            // CommentInfo 객체 반환
-            return commentInfo;
-        });
-
-        return commentInfos;
+        return commentInfoPage;
     }
 
     public void updateComment(Long commentId, Long loginMemberId, CommentApi request) {
