@@ -29,5 +29,15 @@ public class PlayListLike extends BaseEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "playList_id")
     private PlayList playList;
+
+    private int likes;
+
+    public void addLikes() {
+        this.likes++;
+    }
+
+    public void decreaseLikes() {
+        this.likes--;
+    }
 }
 

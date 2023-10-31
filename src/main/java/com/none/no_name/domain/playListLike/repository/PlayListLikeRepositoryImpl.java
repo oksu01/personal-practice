@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.none.no_name.domain.playListLike.entity.QPlayListLike.playListLike;
 
@@ -34,5 +35,13 @@ public class PlayListLikeRepositoryImpl implements PlayListLikeRepositoryCustom{
         long total = query.fetchCount();
 
         return new PageImpl<>(content, pageable, total);
+    }
+
+    @Override
+    public Optional<PlayListLike> findByPlayList(PlayList playList) {
+        JPAQuery<PlayListLike> query = queryFactory.selectFrom(playListLike)
+                .where(playListLike.playListLikeId.eq(playListLike.playListLikeId));
+
+        return Optional.ofNullable(query.fetchFirst());
     }
 }

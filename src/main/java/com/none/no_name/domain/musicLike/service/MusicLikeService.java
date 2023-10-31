@@ -38,12 +38,12 @@ public class MusicLikeService {
 
         if(!isLiked) {
             liked(loginMemberId, musicId);
+            return true;
 
         } else {
             hated(loginMemberId, musicId);
+            return false;
         }
-
-        return !isLiked;
     }
 
     private void liked(Long loginMemberId, Long musicId) {
@@ -52,24 +52,35 @@ public class MusicLikeService {
 
         Music music = verifiedMusic(musicId);
 
-        music.addLikes();
+        // MusicLike 엔티티를 조회하거나 생성합니다.
+        MusicLike musicLike = musicLikeRepository.findByMusic(music)
+                .orElse(MusicLike.builder()
+                        .member(member)
+                        .music(music)
+                        .likes(0) // 처음 좋아요를 누를 때 0으로 설정
+                        .build());
 
-        MemberMusic memberMusic = MemberMusic.builder()
-                .member(member)
-                .MemberMusicId(music.getMusicId())
-                .music(music)
-                .build();
+        // 좋아요 수 증가
+        musicLike.addLikes();
 
-        memberMusicRepository.save(memberMusic);
+        // MusicLike 엔티티를 저장 또는 업데이트
+        musicLikeRepository.save(musicLike);
     }
 
     private void hated(Long loginMemberId, Long musicId) {
 
-        Music music = verifiedMusic(musicId);
-
         Member member = verifiedMember(loginMemberId);
 
-        music.decreaseLikes();
+        Music music = verifiedMusic(musicId);
+
+        MusicLike musicLike = musicLikeRepository.findByMusic(musicId)
+                .orElse(MusicLike.builder()
+                        .member(member)
+                        .music(music)
+                        .likes(0)
+                        .build());
+
+        musicLike.decreaseLikes();
 
         musicLikeRepository.findByMusic(music).ifPresent(musicLikeRepository::delete);
     }
@@ -120,7 +131,7 @@ public class MusicLikeService {
 
         Optional<Boolean> likedStatus = memberRepository.checkMemberLikedMusic(musicId);
 
-        return likedStatus.orElse(false);
+        return likedStatus.orElse(true);
     }
 
     public Member verifiedMember(Long loginMember) {
@@ -130,6 +141,6 @@ public class MusicLikeService {
 
     public Music verifiedMusic(Long musicId) {
 
-         return musicRepository.findById(musicId).orElseThrow(MusicNotFoundException::new);
+        return musicRepository.findById(musicId).orElseThrow(MusicNotFoundException::new);
     }
 }

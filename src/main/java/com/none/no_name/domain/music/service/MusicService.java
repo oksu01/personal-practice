@@ -15,6 +15,7 @@ import com.none.no_name.domain.music.repository.MusicRepositoryImpl;
 import com.none.no_name.domain.musicTag.entity.MusicTag;
 import com.none.no_name.domain.playList.entity.PlayList;
 import com.none.no_name.domain.playList.repository.PlayListRepository;
+import com.none.no_name.domain.playListMusic.dto.PlayListMusicInfo;
 import com.none.no_name.domain.playListMusic.entity.PlayListMusic;
 import com.none.no_name.domain.playListMusic.repository.PlayListMusicRepository;
 import com.none.no_name.domain.tag.entity.Tag;
@@ -137,7 +138,7 @@ public class MusicService {
         return musicInfoPage;
     }
 
-public Page<PlayListMusic> getPlayListMusics(Long memberId, int page, int size, Long loginMemberId, MusicSort musicSort) {
+public Page<PlayListMusicInfo> getPlayListMusics(Long musicId, int page, int size, Long loginMemberId, MusicSort musicSort) {
 
 
         verifiedMember(loginMemberId);
@@ -148,19 +149,28 @@ public Page<PlayListMusic> getPlayListMusics(Long memberId, int page, int size, 
 
     PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-    Optional<PlayList> playListOptional = playListRepository.findById(memberId);
-    if (playListOptional.isPresent()) {
-        PlayList playList = playListOptional.get();
-        List<PlayListMusic> playListMusics = playList.getPlayListMusics();
-        int start = (int) pageRequest.getOffset();
-        int end = Math.min((start + pageRequest.getPageSize()), playListMusics.size());
+    // musicRepository를 사용하여 musicId에 해당하는 음악을 가져옵니다.
+    Music music = musicRepository.findAllById(List.of(musicId)).get(0);
 
-        List<PlayListMusic> paginatedList = playListMusics.subList(start, end);
+    // 음악의 플레이리스트를 가져옵니다.
+    List<PlayListMusic> playListMusics = music.getPlayListMusics();
 
-        return new PageImpl<>(paginatedList, pageRequest, playListMusics.size());
-    } else {
-        throw new MusicNotFoundException();
-    }
+    // 페이징 처리된 결과를 반환합니다.
+    int start = (int) pageRequest.getOffset();
+    int end = Math.min((start + pageRequest.getPageSize()), playListMusics.size());
+    List<PlayListMusic> pageContent = playListMusics.subList(start, end);
+
+    // PlayListMusic 객체를 PlayListMusicInfo 객체로 매핑합니다.
+    List<PlayListMusicInfo> playListMusicInfos = pageContent.stream()
+            .map(playListMusic -> {
+                return PlayListMusicInfo.builder()
+                        .music(music)
+                        .playListMusic(playListMusic)
+                        .build();
+            })
+            .collect(Collectors.toList());
+
+    return new PageImpl<>(playListMusicInfos, pageRequest, playListMusics.size());
 }
 
     public void updateMusic(Long musicId, Long loginMemberId, MusicUpdateServiceApi request) {

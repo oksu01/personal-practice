@@ -22,6 +22,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class PlayListLikeService {
@@ -35,43 +37,56 @@ public class PlayListLikeService {
 
             verifiedMember(loginMemberId);
 
-            boolean isLiked =  isLiked(loginMemberId);
+            verifiedPlayList(playListId);
+
+            boolean isLiked = isLiked(loginMemberId);
 
             if(!isLiked) {
-                liked(loginMemberId, playListId);
+                liked(playListId, loginMemberId);
                 return true;
+
             } else {
-                hated(loginMemberId, playListId);
+                hated(playListId, loginMemberId);
                 return false;
             }
         }
 
         private void liked(Long loginMemberId, Long playListId) {
 
-            verifiedMember(loginMemberId);
+            Member member = verifiedMember(loginMemberId);
 
             PlayList playList = verifiedPlayList(playListId);
 
-            playList.addLikes();
+            PlayListLike playListLike = playListLikeRepository.findByPlayList(playList)
+                            .orElse(PlayListLike.builder()
+                                    .member(member)
+                                    .likes(1)
+                                    .playListLikeId(playListId)
+                                    .build());
 
-            PlayList list = PlayList.builder()
-                            .content(playList.getContent())
-                            .likes(playList.getLikes())
-                            .build();
+            playListLike.addLikes();
 
-            playListRepository.save(list);
+            playListLikeRepository.save(playListLike);
         }
 
         private void hated(Long playListId, Long loginMemberId) {
 
+            Member member = verifiedMember(loginMemberId);
+
             PlayList playList = verifiedPlayList(playListId);
 
-            playList.decreaseLikes();
+            PlayListLike playListLike = playListLikeRepository.findByPlayList(playList)
+                            .orElse(PlayListLike.builder()
+                                    .member(member)
+                                    .likes(1)
+                                    .build());
 
-            playListRepository.findById(playListId).ifPresent(playListRepository::delete);
+            playListLike.decreaseLikes();
+
+            playListLikeRepository.findByPlayList(playList).ifPresent(playListLikeRepository::delete);
         }
 
-    public Page<PlayListLikeInfo> getLikes(Long playListLikeId, int page, int size) {
+    public Page<PlayListLikeInfo> getLikes(Long playListLikeId, int page, int size, PlayListLikeInfo playListLikeInfo) {
         // 페이징
         PageRequest pageRequest = PageRequest.of(page, size);
 
@@ -86,22 +101,20 @@ public class PlayListLikeService {
 
 
 
-    private Boolean isLiked(Long loginMemberId) {
-        return playListRepository.checkMemberLikedMusic(loginMemberId).orElseThrow(MusicLikeValidationException::new);
+    private Boolean isLiked(Long playListId) {
+
+        Optional<Boolean> likedStatus = memberRepository.checkMemberLikePlayList(playListId);
+
+        return likedStatus.orElse(false);
     }
 
-    public void verifiedMember(Long loginMemberId) {
+    public Member verifiedMember(Long loginMemberId) {
 
-        memberRepository.findById(loginMemberId).orElseThrow(MemberAccessDeniedException::new);
+        return memberRepository.findById(loginMemberId).orElseThrow(MemberAccessDeniedException::new);
     }
 
     public PlayList verifiedPlayList(Long playListId) {
 
         return playListRepository.findById(playListId).orElseThrow(PlayListNotFoundException::new);
-    }
-
-    public void verifiedMusic(Long musicId) {
-
-        musicRepository.findById(musicId).orElseThrow(MusicNotFoundException::new);
     }
 }

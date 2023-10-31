@@ -21,21 +21,22 @@ public class PlayListLikeController {
 
     private final PlayListLikeService playListLikeService;
 
-    @PatchMapping("/{playlist-id}/like")
+    @PatchMapping("/{playList-id}/like")
     ResponseEntity<ApiSingleResponse<Boolean>> updateLike(@PathVariable("playList-id") @Positive(message = "validation.positive") Long playListId,
                                                           @LoginId Long loginMemberId) {
 
         Boolean isLike = playListLikeService.updateLike(playListId, loginMemberId);
 
-        return ResponseEntity.ok(ApiSingleResponse.ok(isLike, "좋아요 상태가 업데이트 되었습니다."));
+        return ResponseEntity.ok(ApiSingleResponse.ok(isLike, "관심 상태가 업데이트 되었습니다."));
     }
 
-    @GetMapping("/{playlist-id}/likes")
+    @GetMapping("/{playList-id}/likes")
     public ResponseEntity<ApiPageResponse<PlayListLikeInfo>> getLikes(@PathVariable("playList-id") @Positive(message = "validation.positive") Long playListLikeId,
                                                                       @Positive(message = "validation.positive") @RequestParam(defaultValue = "1") int page,
-                                                                      @Positive(message = "validation.positive") @RequestParam(defaultValue = "5") int size) {
+                                                                      @Positive(message = "validation.positive") @RequestParam(defaultValue = "5") int size,
+                                                                      @RequestBody PlayListLikeInfo playListLikeInfo) {
 
-        Page<PlayListLikeInfo> likes = playListLikeService.getLikes(playListLikeId, page - 1, size);
+        Page<PlayListLikeInfo> likes = playListLikeService.getLikes(playListLikeId, page - 1, size, playListLikeInfo);
 
         return ResponseEntity.ok(ApiPageResponse.ok(likes, "좋아요 조회가 완료되었습니다."));
     }

@@ -63,7 +63,7 @@ public class Music extends BaseEntity {
     @OneToMany(mappedBy = "music", cascade = ALL)
     private List<MusicTag> musicTags = new ArrayList<>();
 
-    private int likes;
+
 
 
     public static Music createMusic(Long loginMemberId, CreateMusic createMusic) {
@@ -94,14 +94,6 @@ public class Music extends BaseEntity {
         this.musicUrl = musicUrl == null ? this.musicUrl : musicUrl;
         this.tags = tags == null ? this.tags : tags;
 
-    }
-
-    public void addLikes() {
-        this.likes++;
-    }
-
-    public void decreaseLikes() {
-        this.likes--;
     }
 
     public static Music addMusic(Long musicId, Long playListId, MusicInfo musicInfo) {
