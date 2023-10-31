@@ -30,5 +30,13 @@ public class MusicLike extends BaseEntity {
     @JoinColumn(name = "music_id")
     private Music music;
 
-    private boolean liked;
+    private int likes;
+
+    public void addLikes() {
+        this.likes++;
+    }
+
+    public void decreaseLikes() {
+        this.likes--;
+    }
 }

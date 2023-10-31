@@ -40,7 +40,7 @@ public class MusicLikeController {
 
         boolean isLiked = musicLikeService.updateLike(loginMemberId, musicId);
 
-        return ResponseEntity.ok(ApiSingleResponse.ok(isLiked, "좋아요 상태가 업데이트 되었습니다."));
+        return ResponseEntity.ok(ApiSingleResponse.ok(isLiked, "호감도 상태가 업데이트 되었습니다."));
     }
 
     @GetMapping("/likes")
