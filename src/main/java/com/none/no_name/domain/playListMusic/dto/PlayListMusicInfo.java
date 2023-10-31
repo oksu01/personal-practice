@@ -15,5 +15,7 @@ public class PlayListMusicInfo {
 
     private Music music;
     private PlayList playList;
-    private PlayListMusic playListMusic;
+    private Long musicId;
+    private Long playListId;
+    private Long playListMusicId;
 }

@@ -43,6 +43,8 @@ public class PlayListService {
 
     public PlayListInfo getPlayList(Long playListId, Long loginMemberId, PlayListInfo request) {
 
+        verifiedPlayList(playListId);
+
         verifiedMember(loginMemberId);
 
         playListRepository.findById(playListId).orElseThrow(PlayListNotFoundException::new);

@@ -75,7 +75,7 @@ public class MusicController{
 
 
     //음원 수정
-    @PatchMapping("/{music-id}/add")
+    @PatchMapping("/{music-id}")
     public ResponseEntity <ApiSingleResponse<Void>> updateMusic(@PathVariable("music-id") @Positive(message = "{validation.positive}") Long musicId,
                                                                 @LoginId Long loginMemberId,
                                                                 @RequestBody @Valid MusicUpdateControllerApi request) {

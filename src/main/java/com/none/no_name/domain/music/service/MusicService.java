@@ -138,7 +138,7 @@ public class MusicService {
         return musicInfoPage;
     }
 
-public Page<PlayListMusicInfo> getPlayListMusics(Long musicId, int page, int size, Long loginMemberId, MusicSort musicSort) {
+public Page<PlayListMusicInfo> getPlayListMusics(Long playListId, int page, int size, Long loginMemberId, MusicSort musicSort) {
 
 
         verifiedMember(loginMemberId);
@@ -149,28 +149,16 @@ public Page<PlayListMusicInfo> getPlayListMusics(Long musicId, int page, int siz
 
     PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-    // musicRepository를 사용하여 musicId에 해당하는 음악을 가져옵니다.
-    Music music = musicRepository.findAllById(List.of(musicId)).get(0);
+    Page<PlayListMusic> playListMusics = playListMusicRepository.findByPlayListId(playListId, pageRequest);
 
-    // 음악의 플레이리스트를 가져옵니다.
-    List<PlayListMusic> playListMusics = music.getPlayListMusics();
+    // PlayListMusic을 PlayListMusicInfo로 변환하는 부분
+    Page<PlayListMusicInfo> playListMusicInfoPage = playListMusics.map(playListMusic ->
+            PlayListMusicInfo.builder()
+                    .playListMusicId(playListId)
+                    .playListMusicId(playListMusic.getPlayListMusicId())
+                    .build());
 
-    // 페이징 처리된 결과를 반환합니다.
-    int start = (int) pageRequest.getOffset();
-    int end = Math.min((start + pageRequest.getPageSize()), playListMusics.size());
-    List<PlayListMusic> pageContent = playListMusics.subList(start, end);
-
-    // PlayListMusic 객체를 PlayListMusicInfo 객체로 매핑합니다.
-    List<PlayListMusicInfo> playListMusicInfos = pageContent.stream()
-            .map(playListMusic -> {
-                return PlayListMusicInfo.builder()
-                        .music(music)
-                        .playListMusic(playListMusic)
-                        .build();
-            })
-            .collect(Collectors.toList());
-
-    return new PageImpl<>(playListMusicInfos, pageRequest, playListMusics.size());
+    return playListMusicInfoPage;
 }
 
     public void updateMusic(Long musicId, Long loginMemberId, MusicUpdateServiceApi request) {

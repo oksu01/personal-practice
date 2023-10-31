@@ -8,7 +8,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface TagRepository extends JpaRepository<Tag, Long>, TagRepositoryCustom {
-
-    @Query("select m from Music m where m.musicId = :musicId")
-    Page<Tag> findByMusicId(Long tagId, Pageable pageable);
 }
