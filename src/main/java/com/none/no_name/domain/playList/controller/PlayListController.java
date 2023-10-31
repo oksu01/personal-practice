@@ -169,15 +169,15 @@ public class PlayListController {
     }
 
     //재생 목록 안에 있는 음원 전체 조회
-    @GetMapping("/{music-id}/music")
+    @GetMapping("/{playList-id}/music")
     public ResponseEntity<ApiPageResponse<PlayListMusicInfo>> getPlayListMusics(
-            @PathVariable("music-id") @Positive(message = "{validation.positive}") Long musicId,
+            @PathVariable("playList-id") @Positive(message = "{validation.positive}") Long playListId,
             @Positive(message = "{validation.positive}") @LoginId Long loginMember,
             @RequestParam(defaultValue = "1") @Positive(message = "{validation.positive}") int page,
             @RequestParam(defaultValue = "5") @Positive(message = "{validation.positive}") int size,
             @RequestParam(defaultValue = "created-date") MusicSort sort) {
 
-        Page<PlayListMusicInfo> pageResult = musicService.getPlayListMusics(musicId, page - 1, size, loginMember, sort);
+        Page<PlayListMusicInfo> pageResult = musicService.getPlayListMusics(playListId, page - 1, size, loginMember, sort);
 
         return ResponseEntity.ok(ApiPageResponse.ok(pageResult, "음원 전체 조회가 완료되었습니다."));
     }
