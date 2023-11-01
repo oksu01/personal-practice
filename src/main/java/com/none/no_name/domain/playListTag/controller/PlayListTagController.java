@@ -34,14 +34,13 @@ public class PlayListTagController {
 
 
     //
-    @GetMapping("/{tag-id}")
-    public ResponseEntity<ApiPageResponse<PlayListTagInfo>> getTags(@PathVariable("tag-id") @Positive(message = "validation.positive") Long tagId,
-                                                                    @Positive(message = "validation.positive")
+    @GetMapping
+    public ResponseEntity<ApiPageResponse<PlayListTagInfo>> getTags(@Positive(message = "validation.positive")
                                                                     @LoginId Long loginMember,
                                                                     @RequestParam(defaultValue = "1") @Positive(message = "validation.positive") int page,
                                                                     @RequestParam(defaultValue = "5") @Positive(message = "validation.positive") int size) {
 
-        Page<PlayListTagInfo> tags = playListTagService.getTags(tagId, loginMember, page-1, size);
+        Page<PlayListTagInfo> tags = playListTagService.getTags(loginMember, page-1, size);
 
         return ResponseEntity.ok(ApiPageResponse.ok(tags, "태그 조회가 완료되었습니다."));
     }

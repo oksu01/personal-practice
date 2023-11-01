@@ -29,7 +29,7 @@ public class MemberMusicController {
                                                                     @PathVariable("music-id") @Positive(message = "validation.positive") Long musicId,
                                                                     @RequestBody @Valid MusicCreateApi response) {
 
-        Long memberMusicId = memberMusicService.createMemberMusic(loginMember, musicId, response.toService());
+        Long memberMusicId = memberMusicService.createMemberMusic(loginMember, musicId);
 
         URI uri = URI.create("/memberMusic" + memberMusicId);
 

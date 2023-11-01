@@ -5,14 +5,20 @@ import com.none.no_name.domain.member.repository.MemberRepository;
 import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.domain.music.repository.MusicRepository;
 import com.none.no_name.domain.musicTag.dto.TagInfo;
+import com.none.no_name.domain.musicTag.entity.MusicTag;
 import com.none.no_name.domain.tag.dto.TagRequestApi;
 import com.none.no_name.domain.tag.entity.Tag;
 import com.none.no_name.domain.tag.repository.TagRepository;
 import com.none.no_name.global.exception.business.member.MemberAccessDeniedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,23 +47,30 @@ public class TagService {
         Tag.updateTag(tagId, loginMemberId, tagInfo);
     }
 
-    public Page<TagInfo> getTags(Long musicId, Long loginMemberId, int page, int size) {
-
+    public Page<TagInfo> getTags(Long loginMemberId, int page, int size) {
         verifiedMember(loginMemberId);
 
         PageRequest pageRequest = PageRequest.of(page, size);
 
-        // 4. 음원에 연결된 댓글 페이지 조회
-        Page<Music> commentPage = memberRepository.findMusicByMemberId(musicId, pageRequest);
+        Page<Tag> tagPage = tagRepository.findAll(pageRequest);
 
-        Page<TagInfo> tagInfoPage = commentPage.map(music -> {
-            return TagInfo.builder()
-                    .musicId(music.getMusicId())
-                    .tags(music.getTags())
-                    .build();
-        });
+        if (!tagPage.isEmpty()) {
+            // 태그 정보 추출 및 변환
+            List<TagInfo> tagInfoList = tagPage.getContent().stream()
+                    .map(tag -> TagInfo.builder()
+                            .tags(tag.getMusicTagList().stream()
+                                    .map(musicTag -> musicTag.getMusic().getTags())
+                                    .flatMap(List::stream)
+                                    .collect(Collectors.toList()))
+                            .build())
+                    .collect(Collectors.toList());
 
-        return tagInfoPage;
+            // 페이지로 변환하여 반환
+            return new PageImpl<>(tagInfoList, pageRequest, tagPage.getTotalElements());
+        } else {
+            // 태그가 없는 경우 빈 페이지를 반환
+            return Page.empty();
+        }
     }
 
     public void verifiedMember(Long loginMemberId) {

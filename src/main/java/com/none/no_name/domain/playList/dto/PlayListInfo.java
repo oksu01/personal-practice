@@ -22,4 +22,24 @@ public class PlayListInfo {
     private int likes;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
+
+    public static PlayListInfo of(Long playListId,
+                                  Long memberId,
+                                  String title,
+                                  String coverImg,
+                                  List<String> tags,
+                                  int likes,
+                                  LocalDateTime createdDate,
+                                  LocalDateTime modifiedDate) {
+        return PlayListInfo.builder()
+                .playListId(playListId)
+                .memberId(memberId)
+                .title(title)
+                .coverImg(coverImg)
+                .tags(tags)
+                .likes(likes)
+                .createdDate(createdDate)
+                .modifiedDate(modifiedDate)
+                .build();
+    }
 }

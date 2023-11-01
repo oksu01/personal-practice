@@ -22,12 +22,12 @@ public class MemberMusicService {
     private final MemberRepository memberRepository;
     private final MusicRepository musicRepository;
 
-    public Long createMemberMusic(Long loginMemberId, Long musicId, CreateMusic createMusic) {
+    public Long createMemberMusic(Long loginMemberId, Long musicId) {
 
         Member member = verifiedMember(loginMemberId);
         Music music = verifiedMusic(musicId);
 
-        MemberMusic memberMusic = MemberMusic.createMemberMusic(member, music, createMusic);
+        MemberMusic memberMusic = MemberMusic.createMemberMusic(member, music);
 
         return memberMusicRepository.save(memberMusic).getMemberMusicId();
     }

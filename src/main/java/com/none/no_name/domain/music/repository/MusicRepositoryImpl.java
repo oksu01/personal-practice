@@ -82,7 +82,8 @@ public class MusicRepositoryImpl implements MusicRepositoryCustom {
                 .where(music1.musicId.eq(musicId))
                 .fetchCount();
 
-        return new PageImpl<>(content, pageable, total);
+        return new PageImpl<>(
+                content, pageable, total);
     }
 
     @Override
@@ -97,7 +98,7 @@ public class MusicRepositoryImpl implements MusicRepositoryCustom {
                 .where(condition);
 
         if(sort == MusicSort.Likes) {
-            query.orderBy(music1.likes.count().desc());
+            query.orderBy(music1.musicLikeCount.count().desc());
         } else if (sort == MusicSort.CREATED_DATE) {
             query.orderBy(music1.musicName.desc());
         }

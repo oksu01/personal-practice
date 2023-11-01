@@ -73,11 +73,12 @@ public class PlayList extends BaseEntity {
                 .build();
     }
 
-    public static PlayList updatePlayList(String title, String coverImg, String content) {
-        return PlayList.builder()
-                .title(title)
-                .coverImg(coverImg)
-                .content(content)
+    public static void updatePlayList(Long playListId, Long loginMember, PlayListPatchApi request) {
+                PlayList.builder()
+                .playListId(playListId)
+                .title(request.getTitle())
+                .coverImg(request.getCoverImg())
+                .content(request.getContent())
                 .build();
     }
 

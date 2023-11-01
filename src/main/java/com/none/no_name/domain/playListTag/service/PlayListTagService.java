@@ -18,8 +18,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,23 +49,22 @@ public class PlayListTagService {
         playListTagRepository.deleteById(playListTagId);
     }
 
-    public Page<PlayListTagInfo> getTags(Long tagId, Long loginMember, int page, int size) {
-
+    public Page<PlayListTagInfo> getTags(Long loginMember, int page, int size) {
         verifiedMember(loginMember);
 
         PageRequest pageRequest = PageRequest.of(page, size);
 
-        Optional<Tag> tagOptional = tagRepository.findById(tagId);
+        Page<Tag> tagPage = tagRepository.findAll(pageRequest);
 
-        if (tagOptional.isPresent()) {
-            Tag tag = tagOptional.get();
+        if (!tagPage.isEmpty()) {
+            List<PlayListTagInfo> tagInfoList = tagPage.getContent().stream()
+                    .map(tag -> PlayListTagInfo.builder()
+                            .tagId(tag.getTagId())
+                            .name(tag.getName())
+                            .build())
+                    .collect(Collectors.toList());
 
-            PlayListTagInfo tagInfo = PlayListTagInfo.builder()
-                    .tagId(tag.getTagId())
-                    .name(tag.getName())
-                    .build();
-
-            return new PageImpl<>(Collections.singletonList(tagInfo), pageRequest, 1);
+            return new PageImpl<>(tagInfoList, pageRequest, tagPage.getTotalElements());
         } else {
             throw new TagNotFoundException();
         }
