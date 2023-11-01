@@ -60,10 +60,9 @@ public class PlayListController {
     //재생 목록 단일 조회
     @GetMapping("/{playList-id}")
     public ResponseEntity<ApiSingleResponse<PlayListInfo>> getPlayList(@PathVariable("playList-id") @Positive(message = "validation.positive") Long playListId,
-                                                                       @LoginId Long loginMemberId,
-                                                                       @RequestBody @Valid PlayListInfo response) {
+                                                                       @LoginId Long loginMemberId) {
 
-        PlayListInfo playList = playListService.getPlayList(playListId, loginMemberId, response);
+        PlayListInfo playList = playListService.getPlayList(playListId, loginMemberId);
 
         return ResponseEntity.ok(ApiSingleResponse.ok(playList, "플레이리스트 조회가 완료되었습니다."));
     }
@@ -71,13 +70,12 @@ public class PlayListController {
 
     //재생 목록 전체 조회
     @GetMapping
-    public ResponseEntity<ApiPageResponse<PlayListInfo>> getPlayLists(@Positive(message = "validation.positive") Long playListId,
-                                                                      @LoginId Long loginMemberId,
+    public ResponseEntity<ApiPageResponse<PlayListInfo>> getPlayLists(@LoginId Long loginMemberId,
                                                                       @Positive(message = "validation.positive") @RequestParam(defaultValue = "1") int page,
                                                                       @Positive(message = "validation.positive") @RequestParam(defaultValue = "5") int size,
                                                                       @RequestParam(defaultValue = "created-date") PlayListSort sort) {
 
-        Page<PlayListInfo> playLists = playListService.getPlayLists(playListId, loginMemberId, page-1, size, sort);
+        Page<PlayListInfo> playLists = playListService.getPlayLists(loginMemberId, page-1, size, sort);
 
         return ResponseEntity.ok(ApiPageResponse.ok(playLists, "플레이리스트 전체 조회가 완료되었습니다."));
     }

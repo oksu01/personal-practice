@@ -41,5 +41,16 @@ public class TagController {
         return ResponseEntity.noContent().build();
     }
 
+    //태그 전체 조회
+    @GetMapping
+    public ResponseEntity<ApiPageResponse<TagInfo>> getTags(@LoginId Long loginMemberId,
+                                                            @RequestParam  @Positive(message = "validation.positive") int page,
+                                                            @RequestParam  @Positive(message = "validation.positive") int size) {
+
+        Page<TagInfo> tags = tagService.getTags(loginMemberId, page, size);
+
+        return ResponseEntity.ok(ApiPageResponse.ok(tags, "태그 전체 조회가 완료되었습니다."));
+    }
+
 }
 

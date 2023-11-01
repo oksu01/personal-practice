@@ -41,27 +41,25 @@ public class PlayListService {
         return playList.getPlayListId();
     }
 
-    public PlayListInfo getPlayList(Long playListId, Long loginMemberId, PlayListInfo request) {
-
-        verifiedPlayList(playListId);
+    public PlayListInfo getPlayList(Long playListId, Long loginMemberId) {
 
         verifiedMember(loginMemberId);
 
-        playListRepository.findById(playListId).orElseThrow(PlayListNotFoundException::new);
+        PlayList playList = verifiedPlayList(playListId);
 
-        return PlayListInfo.builder()
-                .playListId(request.getPlayListId())
-                .memberId(request.getMemberId())
-                .title(request.getTitle())
-                .coverImg(request.getCoverImg())
-                .tags(request.getTags())
-                .likes(request.getLikes())
-                .createdDate(request.getCreatedDate())
-                .modifiedDate(request.getModifiedDate())
-                .build();
+        return PlayListInfo.of(
+                playList.getPlayListId(),
+                playList.getMember().getMemberId(),
+                playList.getTitle(),
+                playList.getCoverImg(),
+                playList.getTags(),
+                playList.getLikes(),
+                playList.getCreatedDate(),
+                playList.getModifiedDate()
+        );
     }
 
-    public Page<PlayListInfo> getPlayLists(Long playListId, Long loginMemberId, int page, int size, PlayListSort sort) {
+    public Page<PlayListInfo> getPlayLists(Long loginMemberId, int page, int size, PlayListSort sort) {
 
         Sort sorting = (sort == PlayListSort.Likes)
                 ? Sort.by(Sort.Direction.DESC, "like", "createdDate")
@@ -69,11 +67,10 @@ public class PlayListService {
 
         PageRequest pageRequest = PageRequest.of(page, size, sorting);
 
-        Page<PlayList> playLists = playListRepository.findAllByPlayListId(playListId, pageRequest);
+        Page<PlayList> playLists = playListRepository.findAll(pageRequest);
 
         Page<PlayListInfo> playListInfoPage = playLists.map(playList ->
                 PlayListInfo.builder()
-                        .playListId(playListId)
                         .memberId(loginMemberId)
                         .title(playList.getTitle())
                         .coverImg(playList.getCoverImg())
@@ -91,7 +88,7 @@ public class PlayListService {
         verifiedMember(loginMemberId);
         verifiedPlayList(playListId);
 
-        PlayList.updatePlayList(request.getTitle(), request.getCoverImg(), request.getContent());
+        PlayList.updatePlayList(playListId, loginMemberId, request);
     }
 
     public void deletePlayList(Long playListId, Long loginMemberId) {
@@ -128,9 +125,9 @@ public class PlayListService {
         return musicRepository.findById(musicId).orElseThrow(MusicNotFoundException::new);
     }
 
-    public void verifiedPlayList(Long playListId) {
+    public PlayList verifiedPlayList(Long playListId) {
 
-        playListRepository.findById(playListId).orElseThrow(PlayListNotFoundException::new);
+        return playListRepository.findById(playListId).orElseThrow(PlayListNotFoundException::new);
     }
 
 

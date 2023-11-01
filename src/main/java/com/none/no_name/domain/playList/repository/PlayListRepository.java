@@ -16,6 +16,4 @@ public interface PlayListRepository extends JpaRepository<PlayList, Long>, PlayL
 
 //    @Query("select p from PlayListLike p where p.playListLikeId =: playListLikeId")
 //    Optional<Boolean> checkMemberLikedMusic(Long memberId);
-
-    Page<PlayList> findAllByPlayListId(Long playListId, Pageable pageable);
 }

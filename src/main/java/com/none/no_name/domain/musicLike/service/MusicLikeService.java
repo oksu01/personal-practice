@@ -16,9 +16,11 @@ import com.none.no_name.global.exception.business.member.MemberAccessDeniedExcep
 import com.none.no_name.global.exception.business.music.MusicNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -102,29 +104,31 @@ public class MusicLikeService {
                 .build();
     }
 
-    public Page<MusicInfo> getMusicLikes(Long musicId, Long loginMember, int page, int size) {
+    public Page<MusicInfo> getMusicLikes(Long musicLikeId, Long loginMember, int page, int size) {
 
         Member member = verifiedMember(loginMember);
 
-        Music findMusic = verifiedMusic(musicId);
+        // musicLikeId를 사용하여 MusicLike 엔티티를 조회
+        Optional<MusicLike> musicLikeOptional = musicLikeRepository.findById(musicLikeId);
 
-        Page<MusicLike> musicLikes = musicLikeRepository.findAllByMusicIdAndMemberId(member, findMusic, PageRequest.of(page, size));
-
-        // MusicLike 객체를 MusicInfo로 매핑
-        Page<MusicInfo> musics = musicLikes.map(musicLike -> {
+        if (musicLikeOptional.isPresent()) {
+            MusicLike musicLike = musicLikeOptional.get();
             Music music = musicLike.getMusic();
-            // MusicLike 객체에서 MusicInfo 객체로 필요한 정보를 복사 또는 매핑
 
-            return MusicInfo.builder()
+            // Music 엔티티에서 MusicInfo 객체로 필요한 정보를 복사 또는 매핑
+            MusicInfo musicInfo = MusicInfo.builder()
                     .artistName(music.getArtistName())
                     .albumName(music.getAlbumName())
                     .musicTime(music.getMusicTime())
                     .albumCoverImg(music.getAlbumCoverImag())
                     .musicLikeCount(music.getMusicLikeCount())
                     .build();
-        });
 
-        return musics;
+            return new PageImpl<>(Collections.singletonList(musicInfo));
+        } else {
+            // musicLikeId에 해당하는 MusicLike 엔티티를 찾지 못한 경우 빈 페이지를 반환
+            return Page.empty();
+        }
     }
 
     private Boolean isLiked(Long musicId) {

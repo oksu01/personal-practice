@@ -43,13 +43,13 @@ public class MusicLikeController {
         return ResponseEntity.ok(ApiSingleResponse.ok(isLiked, "호감도 상태가 업데이트 되었습니다."));
     }
 
-    @GetMapping("/likes")
-    public ResponseEntity<ApiPageResponse<MusicInfo>> getMusicLikes(@Positive(message = "validation.positive") Long musicId,
+    @GetMapping("/{musicLike-id}/music")
+    public ResponseEntity<ApiPageResponse<MusicInfo>> getMusicLikes(@Positive(message = "validation.positive") @PathVariable("musicLike-id") Long musicLikeId,
                                                                     @LoginId Long loginMemberId,
                                                                     @Positive(message = "validation.positive") @RequestParam(defaultValue = "1") int page,
                                                                     @Positive(message = "validation.positive") @RequestParam(defaultValue = "5") int size) {
 
-        Page<MusicInfo> musicLikes = musicLikeService.getMusicLikes(musicId, loginMemberId, page-1, size);
+        Page<MusicInfo> musicLikes = musicLikeService.getMusicLikes(musicLikeId, loginMemberId, page-1, size);
 
         return ResponseEntity.ok(ApiPageResponse.ok(musicLikes, "음원 전체 조회가 완료되었습니다."));
     }
