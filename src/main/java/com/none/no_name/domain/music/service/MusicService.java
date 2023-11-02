@@ -1,36 +1,25 @@
 package com.none.no_name.domain.music.service;
 
-import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.member.repository.MemberRepository;
 import com.none.no_name.domain.memberMusic.entity.MemberMusic;
 import com.none.no_name.domain.memberMusic.repository.MemberMusicRepository;
-import com.none.no_name.domain.music.dto.CreateMusic;
-import com.none.no_name.domain.music.dto.MusicInfo;
-import com.none.no_name.domain.music.dto.MusicSort;
-import com.none.no_name.domain.music.dto.MusicUpdateServiceApi;
+import com.none.no_name.domain.music.dto.*;
 import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.domain.music.repository.MusicRepository;
-import com.none.no_name.domain.music.repository.MusicRepositoryCustom;
-import com.none.no_name.domain.music.repository.MusicRepositoryImpl;
-import com.none.no_name.domain.musicTag.entity.MusicTag;
 import com.none.no_name.domain.playList.entity.PlayList;
 import com.none.no_name.domain.playList.repository.PlayListRepository;
 import com.none.no_name.domain.playListMusic.dto.PlayListMusicInfo;
 import com.none.no_name.domain.playListMusic.entity.PlayListMusic;
 import com.none.no_name.domain.playListMusic.repository.PlayListMusicRepository;
-import com.none.no_name.domain.tag.entity.Tag;
 import com.none.no_name.global.exception.business.member.MemberAccessDeniedException;
 import com.none.no_name.global.exception.business.music.MusicNotFoundException;
 import com.none.no_name.global.exception.business.playList.PlayListNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -64,13 +53,23 @@ public class MusicService {
         );
     }
 
-    public Long createMusic(Long loginMemberId, CreateMusic createMusic) {
+    public MusicCreateResponse createMusic(Long loginMemberId, CreateMusicRequest request) {
 
         verifiedMember(loginMemberId);
 
-        Music music = Music.createMusic(loginMemberId, createMusic);
+        Music music = Music.createMusic(loginMemberId, request);
 
-        return musicRepository.save(music).getMusicId();
+        musicRepository.save(music);
+
+        return MusicCreateResponse.builder()
+                .musicName(music.getMusicName())
+                .artistName(music.getArtistName())
+                .albumName(music.getAlbumName())
+                .musicTime(music.getMusicTime())
+                .albumCoverImg(music.getAlbumCoverImag())
+                .musicUrl(music.getMusicUrl())
+                .tags(music.getTags())
+                .build();
     }
 
     public Page<MusicInfo> getMusics(Long loginMember, int page, int size, MusicSort musicSort) {

@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MusicCreateApi {
+public class MusicCreateResponse {
     private String musicName;
     private String artistName;
     private String albumName;
@@ -19,17 +19,4 @@ public class MusicCreateApi {
     private String albumCoverImg;
     private String musicUrl;
     private List<String> tags;
-
-
-    public CreateMusicRequest toService() {
-        return CreateMusicRequest.builder()
-                .musicName(musicName)
-                .artistName(artistName)
-                .albumName(albumName)
-                .musicTime(musicTime)
-                .albumCoverImg(albumCoverImg)
-                .musicUrl(musicUrl)
-                .tags(tags)
-                .build();
-    }
 }

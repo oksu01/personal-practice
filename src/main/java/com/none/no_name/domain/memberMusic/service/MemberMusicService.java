@@ -5,8 +5,6 @@ import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.member.repository.MemberRepository;
 import com.none.no_name.domain.memberMusic.entity.MemberMusic;
 import com.none.no_name.domain.memberMusic.repository.MemberMusicRepository;
-import com.none.no_name.domain.music.dto.CreateMusic;
-import com.none.no_name.domain.music.dto.MusicInfo;
 import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.domain.music.repository.MusicRepository;
 import com.none.no_name.global.exception.business.member.MemberAccessDeniedException;

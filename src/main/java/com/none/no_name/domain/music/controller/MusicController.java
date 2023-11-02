@@ -54,14 +54,14 @@ public class MusicController{
     public ResponseEntity<ApiSingleResponse<Void>> createMusic(@LoginId Long loginMemberId,
                                                                @RequestBody @Valid MusicCreateApi response) {
 
-        Long musicId = musicService.createMusic(loginMemberId, response.toService());
+        MusicCreateResponse musicCreateUrl = musicService.createMusic(loginMemberId, response.toService());
 
-        URI uri = URI.create("/music/" + musicId);
+        URI uri = URI.create("/musics/" + musicCreateUrl);
 
         return ResponseEntity.created(uri).build();
     }
 
-//    //음원 전체조회(페이징) - 내림차순, 좋아요순, 생성일 순
+    //음원 전체조회(페이징) - 내림차순, 좋아요순, 생성일 순
     @GetMapping
     public ResponseEntity<ApiPageResponse<MusicInfo>> getMusics(@Positive(message = "{validation.positive}") @LoginId Long loginMember,
                                                                 @RequestParam(defaultValue = "1") @Positive(message = "{validation.positive}") int page,

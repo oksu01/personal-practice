@@ -1,6 +1,5 @@
 package com.none.no_name.domain.memberMusic.controller;
 
-
 import com.none.no_name.domain.memberMusic.service.MemberMusicService;
 import com.none.no_name.domain.music.dto.MusicCreateApi;
 import com.none.no_name.domain.music.dto.MusicInfo;
@@ -26,8 +25,8 @@ public class MemberMusicController {
 
     @PostMapping("/{music-id}")
     public ResponseEntity<ApiSingleResponse<Void>> createMemberMusic(@LoginId Long loginMember,
-                                                                    @PathVariable("music-id") @Positive(message = "validation.positive") Long musicId,
-                                                                    @RequestBody @Valid MusicCreateApi response) {
+                                                                     @PathVariable("music-id") @Positive(message = "validation.positive") Long musicId,
+                                                                     @RequestBody @Valid MusicCreateApi response) {
 
         Long memberMusicId = memberMusicService.createMemberMusic(loginMember, musicId);
 
