@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,10 +26,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/search")
 @RestController
 @RequiredArgsConstructor
+@Validated
 public class SearchController {
 
     private final SearchService searchService;
-    private final PlayListRepository playListRepository;
 
     @GetMapping("/musics")
     public ResponseEntity<ApiPageResponse<Music>> searchMusic(@RequestParam String keyword,

@@ -1,7 +1,6 @@
 package com.none.no_name.domain.memberMusic.entity;
 
 import com.none.no_name.domain.member.entity.Member;
-import com.none.no_name.domain.music.dto.CreateMusic;
 import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.global.base.BaseEntity;
 import jakarta.persistence.*;

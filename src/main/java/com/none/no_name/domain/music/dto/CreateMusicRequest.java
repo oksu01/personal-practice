@@ -1,6 +1,5 @@
 package com.none.no_name.domain.music.dto;
 
-import com.none.no_name.domain.musicTag.entity.MusicTag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +9,7 @@ import java.util.List;
 @Builder
 @Getter
 @AllArgsConstructor
-public class CreateMusic {
+public class CreateMusicRequest {
     private String musicName;
     private String artistName;
     private String albumName;

@@ -1,7 +1,7 @@
 package com.none.no_name.domain.music.entity;
 
 import com.none.no_name.domain.memberMusic.entity.MemberMusic;
-import com.none.no_name.domain.music.dto.CreateMusic;
+import com.none.no_name.domain.music.dto.CreateMusicRequest;
 import com.none.no_name.domain.music.dto.MusicInfo;
 import com.none.no_name.domain.musicLike.entity.MusicLike;
 import com.none.no_name.domain.musicTag.entity.MusicTag;
@@ -66,7 +66,7 @@ public class Music extends BaseEntity {
 
 
 
-    public static Music createMusic(Long loginMemberId, CreateMusic createMusic) {
+    public static Music createMusic(Long loginMemberId, CreateMusicRequest createMusic) {
         return Music.builder()
                 .musicName(createMusic.getMusicName())
                 .artistName(createMusic.getArtistName())
