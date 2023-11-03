@@ -35,7 +35,6 @@ public class MusicController{
 
     private final MusicService musicService;
     private final MusicCommentService musicCommentService;
-    private final MusicLikeService musicLikeService;
     private final TagService tagService;
 
 
@@ -63,14 +62,14 @@ public class MusicController{
 
     //음원 전체조회(페이징) - 내림차순, 좋아요순, 생성일 순
     @GetMapping
-    public ResponseEntity<ApiPageResponse<MusicInfo>> getMusics(@Positive(message = "{validation.positive}") @LoginId Long loginMember,
+    public ResponseEntity<ApiPageResponse<MusicInfo>> getMusics(@Positive(message = "validation.positive") @LoginId Long loginMember,
                                                                 @RequestParam(defaultValue = "1") @Positive(message = "{validation.positive}") int page,
                                                                 @RequestParam(defaultValue = "5") @Positive(message = "{validation.positive}") int size,
                                                                 @RequestParam(defaultValue = "created-date") MusicSort sort) {
 
         Page<MusicInfo> musics = musicService.getMusics(loginMember, page-1, size, sort);
 
-        return ResponseEntity.ok(ApiPageResponse.ok(musics, "음원 전체 조회 성공"));
+        return ResponseEntity.ok(ApiPageResponse.ok(musics, "음원 전체 조회를 완료하였습니다."));
     }
 
 
@@ -111,7 +110,7 @@ public class MusicController{
 
     //태그 등록
     @PostMapping("/{music-id}/tags")
-    public ResponseEntity<Void> createTag(@PathVariable("music-id") @Positive(message = "validation.positive") Long musicId,
+    public ResponseEntity<Void> createTag(@PathVariable("music-id") @Positive(message = "{validation.positive}") Long musicId,
                                           @LoginId Long loginMember,
                                           @RequestBody @Valid TagResponseApi response) {
 
@@ -120,6 +119,4 @@ public class MusicController{
         return ResponseEntity.noContent().build();
     }
 
-
 }
-

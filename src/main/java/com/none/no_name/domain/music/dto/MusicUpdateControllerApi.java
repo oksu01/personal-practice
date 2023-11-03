@@ -1,5 +1,7 @@
 package com.none.no_name.domain.music.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class MusicUpdateControllerApi {
     private String musicName;
+    @NotBlank(message = "{validation.music.artistName}")
     private String artistName;
     private String albumName;
     private int musicTime;

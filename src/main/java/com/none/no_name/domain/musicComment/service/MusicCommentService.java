@@ -3,6 +3,7 @@ package com.none.no_name.domain.musicComment.service;
 
 import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.member.repository.MemberRepository;
+import com.none.no_name.domain.music.dto.MusicInfo;
 import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.domain.music.repository.MusicRepository;
 import com.none.no_name.domain.musicComment.dto.CommentApi;
@@ -52,15 +53,22 @@ public class MusicCommentService {
 
         Page<MusicComment> comments = musicCommentRepository.findAll(pageRequest);
 
-        Page<CommentInfo> commentInfoPage = comments.map(comment -> CommentInfo.builder()
-                .commentId(comment.getMusicCommentId())
-                .content(comment.getContent())
-                .memberId(comment.getMember().getMemberId())
-                .musicId(comment.getMusic().getMusicId())
-                .build());
+        return comments.map(comment -> {
+            CommentInfo.CommentInfoBuilder builder = CommentInfo.builder()
+                    .commentId(comment.getMusicCommentId())
+                    .content(comment.getContent())
+                    .memberId(comment.getMember().getMemberId());
 
-        return commentInfoPage;
+            if (comment.getMusic() != null) {
+                builder.musicId(comment.getMusic().getMusicId());
+            } else {
+                throw new MusicNotFoundException();
+            }
+
+            return builder.build();
+        });
     }
+
 
     public void updateComment(Long commentId, Long loginMemberId, CommentApi request) {
 

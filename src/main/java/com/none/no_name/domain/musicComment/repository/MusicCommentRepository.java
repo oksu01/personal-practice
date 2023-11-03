@@ -10,10 +10,4 @@ import org.springframework.data.repository.query.Param;
 
 public interface MusicCommentRepository extends JpaRepository<MusicComment, Long>, MusicCommentRepositoryCustom {
 
-    @Query("select m from MusicComment m where m.music.musicId = :musicId")
-    Page<MusicComment> findByMusicId(@Param("musicId") Long musicId, Pageable pageable);
-
-
-//    @Query("select m from MusicComment m where m.music.likes = :likes and m.music.musicId = :musicId")
-//    Page<MusicComment> findByMusicIdAndLike(@Param("musicId")Long musicId, @Param("likes")int like, Pageable pageable);
 }

@@ -6,9 +6,11 @@ import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.domain.playList.entity.PlayList;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface MusicRepositoryCustom {
 
     Page<Music> findMusicInfoByMusicId(Long musicId, Pageable pageable);

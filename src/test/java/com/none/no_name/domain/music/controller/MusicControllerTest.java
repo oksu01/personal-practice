@@ -1,20 +1,29 @@
 package com.none.no_name.domain.music.controller;
 
 import com.none.no_name.domain.music.dto.*;
+import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.domain.musicComment.dto.CommentApi;
 import com.none.no_name.domain.tag.dto.TagResponseApi;
+import com.none.no_name.global.response.ApiPageResponse;
 import com.none.no_name.global.response.ApiSingleResponse;
 import com.none.no_name.global.testHelper.ControllerTest;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.test.web.servlet.ResultActions;
 
+import javax.xml.transform.Result;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -60,6 +69,37 @@ class MusicControllerTest extends ControllerTest {
                 .andExpect(content().string(apiResponse));
         }
 
+//    @Test
+//    @DisplayName("음원 전체 목록 조회")
+//    void getMusics() throws Exception {
+//        //given
+//        int page = 1;
+//        int size = 5;
+//
+//        List<MusicInfo> response = createMusics(size);
+//        Page<MusicInfo> musicResponse = createPage(response, page, size, 10);
+//
+//        String apiResponse = objectMapper.writeValueAsString(ApiPageResponse.ok(musicResponse, "음원 전체 조회를 완료하였습니다."));
+//
+//        given(musicService.getMusics(anyLong(), anyInt(), anyInt(), any())).willReturn(musicResponse);
+//
+//        //when
+//        ResultActions actions = mockMvc.perform(
+//                get(BASE_URL)
+//                        .param("page", String.valueOf(page))
+//                        .param("size", String.valueOf(size))
+//                        .param("musicSort", "like")
+//                        .accept(APPLICATION_JSON)
+//                        .header(AUTHORIZATION, TOKEN)
+//        );
+//
+//        //then
+//         actions.andDo(print())
+//                .andExpect(status().isOk())
+//                .andExpect(content().string(apiResponse));
+//    }
+
+
     @Test
     @DisplayName("음원 등록")
     void createMusic() throws Exception {
@@ -79,7 +119,7 @@ class MusicControllerTest extends ControllerTest {
                 .musicName("Yours")
                 .artistName("데이먼스이어")
                 .albumName("Mondegreen")
-                .musicTime(180L)
+                .musicTime(300L)
                 .albumCoverImg("Img")
                 .musicUrl("Url")
                 .tags(List.of("Pagan, Mondegreen, Untitled"))
@@ -112,7 +152,7 @@ class MusicControllerTest extends ControllerTest {
                 .musicName("처음 만날 때처럼")
                 .artistName("잔나비")
                 .albumName("pony")
-                .musicTime(180)
+                .musicTime(300)
                 .albumCoverImg("Img")
                 .musicUrl("Url")
                 .tags(List.of("Jannabi", "LOOT AT YOU!", "lady bird"))
@@ -129,6 +169,24 @@ class MusicControllerTest extends ControllerTest {
 
         //then
         actions.andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("음원 삭제")
+    void deleteMusic() throws Exception {
+        //given
+        Long musicId = 1L;
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                delete(BASE_URL + "/{music-id}", musicId)
+                        .header(AUTHORIZATION, TOKEN)
+        );
+
+        //then
+        actions
+                .andDo(print())
                 .andExpect(status().isNoContent());
     }
 
@@ -181,5 +239,29 @@ class MusicControllerTest extends ControllerTest {
         //then
         actions.andDo(print())
                 .andExpect(status().isNoContent());
+    }
+
+    private List<MusicInfo> createMusics(int size) {
+
+        List<MusicInfo> musicInfos = new ArrayList<>();
+
+        for(int i = 1; i <= size; i++) {
+
+            MusicInfo music = MusicInfo.builder()
+                    .artistName("짙은")
+                    .albumName("how are u today")
+                    .musicName("백야")
+                    .musicTime(180L)
+                    .albumCoverImg("Img")
+                    .musicUri("Uri")
+                    .musicLikeCount(99)
+                    .createdDate(LocalDateTime.now())
+                    .modifiedAt(LocalDateTime.now())
+                    .tags(List.of("Zitten", "March"))
+                    .build();
+
+            musicInfos.add(music);
+        }
+        return musicInfos;
     }
 }
