@@ -1,5 +1,9 @@
 package com.none.no_name.domain.music.dto;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MusicCreateApi {
+    @NotBlank(message = "{validation.music.musicName}")
     private String musicName;
+    @NotBlank(message = "{validation.music.artistName}")
     private String artistName;
     private String albumName;
     private Long musicTime;

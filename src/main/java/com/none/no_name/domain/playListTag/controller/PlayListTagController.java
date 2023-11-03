@@ -24,7 +24,7 @@ public class PlayListTagController {
     private final PlayListTagService playListTagService;
 
     @DeleteMapping("/{playListTag-id}")
-    public ResponseEntity<Void> deleteTag(@PathVariable("playListTag-id") @Positive(message = "validation.positive") Long playListTagId,
+    public ResponseEntity<Void> deleteTag(@PathVariable("playListTag-id") @Positive(message = "{validation.positive}") Long playListTagId,
                                           @LoginId Long loginMember) {
 
         playListTagService.deleteTag(playListTagId, loginMember);
@@ -35,10 +35,10 @@ public class PlayListTagController {
 
     //
     @GetMapping
-    public ResponseEntity<ApiPageResponse<PlayListTagInfo>> getTags(@Positive(message = "validation.positive")
+    public ResponseEntity<ApiPageResponse<PlayListTagInfo>> getTags(@Positive(message = "{validation.positive}")
                                                                     @LoginId Long loginMember,
-                                                                    @RequestParam(defaultValue = "1") @Positive(message = "validation.positive") int page,
-                                                                    @RequestParam(defaultValue = "5") @Positive(message = "validation.positive") int size) {
+                                                                    @RequestParam(defaultValue = "1") @Positive(message = "{validation.positive}") int page,
+                                                                    @RequestParam(defaultValue = "5") @Positive(message = "{validation.positive}") int size) {
 
         Page<PlayListTagInfo> tags = playListTagService.getTags(loginMember, page-1, size);
 

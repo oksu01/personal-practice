@@ -34,7 +34,7 @@ public class MusicCommentController {
 
         Page<CommentInfo> comments = musicCommentService.getComments(page-1, size, sort);
 
-        return ResponseEntity.ok(ApiPageResponse.ok(comments, "댓글 전체 조회 성공"));
+        return ResponseEntity.ok(ApiPageResponse.ok(comments, "음원 댓글 전체 조회가 완료되었습니다."));
     }
 
     @PatchMapping("/{comment-id}")
