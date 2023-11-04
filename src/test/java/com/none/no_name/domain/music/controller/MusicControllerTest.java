@@ -77,9 +77,10 @@ class MusicControllerTest extends ControllerTest {
 //        //given
 //        int page = 1;
 //        int size = 5;
+//        MusicSort sort = MusicSort.CREATED_DATE;
 //
 //        List<MusicInfo> response = createMusics(size);
-//        Page<MusicInfo> musicResponse = createPage(response, page, size, 10);
+//        Page<MusicInfo> musicResponse = createPage(response, page, size, 5);
 //
 //        String apiResponse = objectMapper.writeValueAsString(ApiPageResponse.ok(musicResponse, "음원 전체 조회를 완료하였습니다."));
 //
@@ -90,8 +91,7 @@ class MusicControllerTest extends ControllerTest {
 //                get(BASE_URL)
 //                        .param("page", String.valueOf(page))
 //                        .param("size", String.valueOf(size))
-//                        .param("musicSort", "like")
-//                        .accept(APPLICATION_JSON)
+//                        .param("musicSort", String.valueOf(sort))
 //                        .header(AUTHORIZATION, TOKEN)
 //        );
 //
