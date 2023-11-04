@@ -33,6 +33,7 @@ public class MusicTagService {
     public TagInfo createMusicTag(Long musicId, Long loginMember, TagInfo tagInfo) {
 
         verifiedMember(loginMember);
+
         verifiedMusic(musicId);
 
         TagInfo tags = TagInfo.builder()
