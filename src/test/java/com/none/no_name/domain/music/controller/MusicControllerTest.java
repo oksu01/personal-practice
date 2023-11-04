@@ -3,6 +3,8 @@ package com.none.no_name.domain.music.controller;
 import com.none.no_name.domain.music.dto.*;
 import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.domain.musicComment.dto.CommentApi;
+import com.none.no_name.domain.musicTag.dto.TagInfo;
+import com.none.no_name.domain.tag.dto.TagRequestApi;
 import com.none.no_name.domain.tag.dto.TagResponseApi;
 import com.none.no_name.global.response.ApiPageResponse;
 import com.none.no_name.global.response.ApiSingleResponse;
@@ -105,7 +107,7 @@ class MusicControllerTest extends ControllerTest {
     void createMusic() throws Exception {
 
         //given
-        MusicCreateResponse response = MusicCreateResponse.builder()
+        MusicCreateResponse request = MusicCreateResponse.builder()
                 .musicName("열아홉")
                 .artistName("1/N")
                 .albumName("1/N")
@@ -115,19 +117,9 @@ class MusicControllerTest extends ControllerTest {
                 .tags(List.of("19"))
                 .build();
 
-        MusicCreateApi request = MusicCreateApi.builder()
-                .musicName("Yours")
-                .artistName("데이먼스이어")
-                .albumName("Mondegreen")
-                .musicTime(300L)
-                .albumCoverImg("Img")
-                .musicUrl("Url")
-                .tags(List.of("Pagan, Mondegreen, Untitled"))
-                .build();
-
         String jsonRequest = objectMapper.writeValueAsString(request);
 
-        given(musicService.createMusic(anyLong(), any())).willReturn(response);
+        given(musicService.createMusic(anyLong(), any())).willReturn(request);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -140,7 +132,7 @@ class MusicControllerTest extends ControllerTest {
         actions
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "/musics/" + response));
+                .andExpect(header().string("Location", "/musics/" + request));
     }
 
     @Test
@@ -148,6 +140,7 @@ class MusicControllerTest extends ControllerTest {
     void updateMusic() throws Exception {
         //given
         Long musicId = 1L;
+
         MusicUpdateControllerApi request = MusicUpdateControllerApi.builder()
                 .musicName("처음 만날 때처럼")
                 .artistName("잔나비")
@@ -222,10 +215,13 @@ class MusicControllerTest extends ControllerTest {
         //given
         Long musicId = 1L;
 
-        TagResponseApi request = TagResponseApi.builder()
-                .category("Indie Band")
-                .tagId(1L)
+        TagInfo response = TagInfo.builder()
+                .musicId(musicId)
+                .name("검정치마")
+                .tags(List.of("Ballad", "Indie"))
                 .build();
+
+        given(musicTagService.createMusicTag(anyLong(), anyLong(), any())).willReturn(response);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -233,7 +229,7 @@ class MusicControllerTest extends ControllerTest {
                         .contentType(APPLICATION_JSON)
                         .accept(APPLICATION_JSON)
                         .header(AUTHORIZATION, TOKEN)
-                        .content(objectMapper.writeValueAsString(request))
+                        .content(objectMapper.writeValueAsString(response))
         );
 
         //then
