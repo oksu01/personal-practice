@@ -23,20 +23,20 @@ public class MemberMusicController {
     private final MemberMusicService memberMusicService;
 
 
-    @PostMapping("/{music-id}")
+    @PostMapping("/{music-id}/memberMusics")
     public ResponseEntity<ApiSingleResponse<Void>> createMemberMusic(@LoginId Long loginMember,
                                                                      @PathVariable("music-id") @Positive(message = "validation.positive") Long musicId,
                                                                      @RequestBody @Valid MusicCreateApi response) {
 
         Long memberMusicId = memberMusicService.createMemberMusic(loginMember, musicId);
 
-        URI uri = URI.create("/memberMusic" + memberMusicId);
+        URI uri = URI.create("/memberMusics" + memberMusicId);
 
 
         return ResponseEntity.created(uri).build();
     }
 
-    @DeleteMapping({"/music-id"})
+    @DeleteMapping("/{music-id}")
     public ResponseEntity<Void> deleteMemberMusic(@LoginId Long loginMember,
                                                   @Positive(message = "validation.positive") @PathVariable("music-id") Long musicId) {
 
