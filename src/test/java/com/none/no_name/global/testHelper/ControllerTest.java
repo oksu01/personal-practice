@@ -2,13 +2,17 @@ package com.none.no_name.global.testHelper;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.none.no_name.domain.member.entity.Authority;
+import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.memberMusic.controller.MemberMusicController;
 import com.none.no_name.domain.memberMusic.service.MemberMusicService;
 import com.none.no_name.domain.music.controller.MusicController;
+import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.domain.music.service.MusicService;
 import com.none.no_name.domain.musicComment.controller.MusicCommentController;
 import com.none.no_name.domain.musicComment.service.MusicCommentService;
 import com.none.no_name.domain.musicLike.controller.MusicLikeController;
+import com.none.no_name.domain.musicLike.entity.MusicLike;
 import com.none.no_name.domain.musicLike.service.MusicLikeService;
 import com.none.no_name.domain.musicTag.controller.MusicTagController;
 import com.none.no_name.domain.musicTag.service.MusicTagService;
@@ -54,6 +58,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -219,6 +224,32 @@ public class ControllerTest {
 
     protected <T> Page<T> createPage(List<T> contents, int page, int size, int totalElements) {
         return new PageImpl<>(contents, PageRequest.of(page, size), totalElements);
+    }
+
+    protected Member createdMember() {
+        return Member.builder()
+                .email("test@email.com")
+                .nickname("test")
+                .password("1234qwer!")
+                .authority(Authority.ROLE_USER)
+                .build();
+    }
+
+    protected Music createdMusic()  {
+        return Music.builder()
+                .musicName("musicName")
+                .artistName("artistName")
+                .musicTime(300L)
+                .albumCoverImag("Img")
+                .albumName("albumName")
+                .musicUrl("Url")
+                .musicLikes(new ArrayList<>())
+                .musicLikeCount(0)
+                .tags(List.of("artist", "playList", "song"))
+                .memberMusics(new ArrayList<>())
+                .playListMusics(new ArrayList<>())
+                .musicTags(new ArrayList<>())
+                .build();
     }
 
 }
