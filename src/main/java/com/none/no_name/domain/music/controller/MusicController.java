@@ -62,7 +62,7 @@ public class MusicController{
 
     //음원 전체조회(페이징) - 내림차순, 좋아요순, 생성일 순
     @GetMapping
-    public ResponseEntity<ApiPageResponse<MusicInfo>> getMusics(@Positive(message = "validation.positive") @LoginId Long loginMember,
+    public ResponseEntity<ApiPageResponse<MusicInfo>> getMusics(@Positive(message = "{validation.positive}") @LoginId Long loginMember,
                                                                 @RequestParam(defaultValue = "1") @Positive(message = "{validation.positive}") int page,
                                                                 @RequestParam(defaultValue = "5") @Positive(message = "{validation.positive}") int size,
                                                                 @RequestParam(defaultValue = "created-date") MusicSort sort) {

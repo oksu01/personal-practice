@@ -91,7 +91,7 @@ class MusicControllerTest extends ControllerTest {
 //                get(BASE_URL)
 //                        .param("page", String.valueOf(page))
 //                        .param("size", String.valueOf(size))
-//                        .param("musicSort", String.valueOf(sort))
+//                        .param("sort", String.valueOf(sort))
 //                        .header(AUTHORIZATION, TOKEN)
 //        );
 //

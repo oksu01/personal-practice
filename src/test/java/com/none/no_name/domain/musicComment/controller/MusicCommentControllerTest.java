@@ -1,6 +1,7 @@
 package com.none.no_name.domain.musicComment.controller;
 
 import com.none.no_name.domain.musicComment.dto.CommentInfo;
+import com.none.no_name.domain.musicComment.dto.CommentSort;
 import com.none.no_name.domain.musicComment.dto.MusicCommentResponse;
 import com.none.no_name.global.response.ApiPageResponse;
 import com.none.no_name.global.testHelper.ControllerTest;
@@ -35,6 +36,7 @@ class MusicCommentControllerTest extends ControllerTest {
         //given
         int page = 1;
         int size = 5;
+        CommentSort sort = CommentSort.Likes;
 
         List<CommentInfo> response = createComment(size);
         Page<CommentInfo> pageResponse = createPage(response, page, size, 99);
@@ -48,7 +50,7 @@ class MusicCommentControllerTest extends ControllerTest {
                 get(BASE_URL)
                         .param("page", String.valueOf(page))
                         .param("size", String.valueOf(size))
-                        .param("sort", "like")
+                        .param("sort", String.valueOf(sort))
                         .accept(MediaType.APPLICATION_JSON)
                         .header(AUTHORIZATION, TOKEN)
         );
