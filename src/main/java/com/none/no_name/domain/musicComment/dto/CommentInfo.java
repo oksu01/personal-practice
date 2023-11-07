@@ -12,4 +12,5 @@ public class CommentInfo {
     private Long memberId;
     private String image;
     private Long musicId;
+    private int likes;
 }

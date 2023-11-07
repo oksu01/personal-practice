@@ -3,6 +3,7 @@ package com.none.no_name.domain.musicComment.entity;
 import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.domain.musicComment.dto.CommentApi;
+import com.none.no_name.domain.musicLike.entity.MusicLike;
 import com.none.no_name.global.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.xml.stream.events.Comment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -35,9 +39,10 @@ public class MusicComment extends BaseEntity {
     @JoinColumn(name = "music_id")
     private Music music;
 
-//    @Column(nullable = true)
-//    private int like;
+    @OneToMany(mappedBy = "musicComment", cascade = CascadeType.ALL, fetch = LAZY)
+    private List<MusicLike> musicLikeList = new ArrayList<>();
 
+    private int likes;
     public static MusicComment newComment(CommentApi comment, Member member, Music music) {
         return MusicComment.builder()
                 .content(comment.getContent())
