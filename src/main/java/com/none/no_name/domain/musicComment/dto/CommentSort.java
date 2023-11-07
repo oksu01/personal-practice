@@ -11,7 +11,7 @@ import javax.xml.stream.events.Comment;
 public enum CommentSort implements BaseEnum {
 
     CREATED_DATE("최신순", "create-date", "createdDate"),
-    Likes("좋아요순", "like", "like"),
+    Likes("좋아요순", "likes", "likes"),
             ;
 
     private final String description;

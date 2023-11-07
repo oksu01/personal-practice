@@ -46,7 +46,7 @@ public class MusicCommentService {
     public Page<CommentInfo> getComments(int page, int size, CommentSort commentSort) {
 
         Sort sort = (commentSort == CommentSort.Likes)
-                ? Sort.by(Sort.Direction.DESC, "like", "createdDate")
+                ? Sort.by(Sort.Direction.DESC, "likes", "createdDate")
                 : Sort.by(Sort.Direction.DESC, "createdDate");
 
         PageRequest pageRequest = PageRequest.of(page, size, sort);
@@ -56,8 +56,7 @@ public class MusicCommentService {
         return comments.map(comment -> {
             CommentInfo.CommentInfoBuilder builder = CommentInfo.builder()
                     .commentId(comment.getMusicCommentId())
-                    .content(comment.getContent())
-                    .memberId(comment.getMember().getMemberId());
+                    .content(comment.getContent());
 
             if (comment.getMusic() != null) {
                 builder.musicId(comment.getMusic().getMusicId());
@@ -73,6 +72,8 @@ public class MusicCommentService {
     public void updateComment(Long commentId, Long loginMemberId, CommentApi request) {
 
         verifiedMember(loginMemberId);
+
+        verifiedComment(commentId);
 
         MusicComment musicComment = verifiedComment(commentId);
 

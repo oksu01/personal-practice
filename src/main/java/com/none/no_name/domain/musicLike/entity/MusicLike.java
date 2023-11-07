@@ -2,6 +2,7 @@ package com.none.no_name.domain.musicLike.entity;
 
 import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.music.entity.Music;
+import com.none.no_name.domain.musicComment.entity.MusicComment;
 import com.none.no_name.global.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,10 @@ public class MusicLike extends BaseEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "music_id")
     private Music music;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "musicComment_id")
+    private MusicComment musicComment;
 
     private int likes;
 
