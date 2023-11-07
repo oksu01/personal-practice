@@ -1,11 +1,9 @@
 package com.none.no_name.domain.music.service;
 
 import com.none.no_name.domain.member.entity.Member;
-import com.none.no_name.domain.music.dto.CreateMusicRequest;
-import com.none.no_name.domain.music.dto.MusicInfo;
-import com.none.no_name.domain.music.dto.MusicSort;
-import com.none.no_name.domain.music.dto.MusicUpdateServiceApi;
+import com.none.no_name.domain.music.dto.*;
 import com.none.no_name.domain.music.entity.Music;
+import com.none.no_name.domain.music.repository.MusicRepository;
 import com.none.no_name.global.exception.business.member.MemberAccessDeniedException;
 import com.none.no_name.global.exception.business.music.MusicNotFoundException;
 import com.none.no_name.global.testHelper.ServiceTest;
@@ -31,9 +29,13 @@ class MusicServiceTest extends ServiceTest {
     @Autowired
     private MusicService musicService;
 
+    @Autowired
+    private MusicRepository musicRepository;
+
+
     @Test
     @DisplayName("음원 조회시 로그인을 하지 않으면 'MemberAccessDeniedException'이 발생한다.")
-    void getMusic() {
+    void MemberAccessDeniedException() {
         //given
         Member member = createAndSaveMember();
         Music music = createAndSaveMusic(member);
@@ -113,16 +115,54 @@ class MusicServiceTest extends ServiceTest {
         assertThat(music2.getMusicName()).isEqualTo("name");
     }
 
-//    @Test
-//    @DisplayName("음원 수정시 음원이 존재하지 않으면 'MusicNotFoundException'이 발생한다.")
-//    void musicNotFoundException() {
-//        //given
-//        Member member = createAndSaveMember();
-//        Music music = createAndSaveMusic(member);
-//
-//        //when && then
-//        assertThrows(MusicNotFoundException.class, () -> {
-//            musicService.updateMusic(999999L, 1L, new MusicUpdateServiceApi("Mouse", "이고도", "Mouse", 180, "Img", "Url", List.of("2021.01.18")));
-//        });
-//    }
+    @Test
+    @DisplayName("음원을 등록한다.")
+    void createMusic() {
+        //given
+        Member member = createAndSaveMember();
+        CreateMusicRequest createMusic = CreateMusicRequest.builder()
+                .musicName("숲")
+                .artistName("최유리")
+                .albumName("숲")
+                .musicTime(180L)
+                .albumCoverImg("Img")
+                .musicUrl("Url")
+                .tags(List.of("숲", "바다"))
+                .build();
+
+        //when
+        MusicCreateResponse music = musicService.createMusic(member.getMemberId(), createMusic);
+
+        //then
+        assertThat(music.getMusicName().equals("숲"));
+        assertThat(music.getArtistName().equals("최유리"));
+    }
+
+    @Test
+    @DisplayName("음원 수정시 음원이 존재하지 않으면 'MusicNotFoundException'이 발생한다.")
+    void musicNotFoundException() {
+        //given
+        Member member = createAndSaveMember();
+        Music music = createAndSaveMusic(member);
+
+        //when && then
+        assertThrows(MusicNotFoundException.class, () -> {
+            musicService.updateMusic(999999L, 1L, new MusicUpdateServiceApi("Mouse", "이고도", "Mouse", 180, "Img", "Url", List.of("2021.01.18")));
+        });
+    }
+
+    @Test
+    @DisplayName("음원을 삭제한다.")
+    void deleteMusic() {
+        //given
+        Member member = createAndSaveMember();
+        Music music = createAndSaveMusic(member);
+
+        //when
+        musicService.deleteMusic(music.getMusicId(), member.getMemberId());
+
+        //then
+        assertThat(musicRepository.findById(music.getMusicId())).isEmpty();
+
+    }
 }
