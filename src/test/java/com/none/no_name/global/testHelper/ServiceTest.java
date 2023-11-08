@@ -4,6 +4,7 @@ package com.none.no_name.global.testHelper;
 import com.none.no_name.domain.member.entity.Authority;
 import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.member.repository.MemberRepository;
+import com.none.no_name.domain.memberMusic.entity.MemberMusic;
 import com.none.no_name.domain.memberMusic.repository.MemberMusicRepository;
 import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.domain.music.repository.MusicRepository;
@@ -112,6 +113,17 @@ public abstract class ServiceTest {
         tagRepository.save(tag);
 
         return tag;
+    }
+
+    protected MemberMusic createAndSaveMemberMusic(Member member, Music music) {
+        MemberMusic memberMusic = MemberMusic.builder()
+                .member(member)
+                .music(music)
+                .build();
+
+        memberMusicRepository.save(memberMusic);
+
+        return memberMusic;
     }
 }
 
