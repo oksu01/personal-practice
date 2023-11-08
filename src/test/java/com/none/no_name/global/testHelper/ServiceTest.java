@@ -16,6 +16,7 @@ import com.none.no_name.domain.playListComment.repository.PlayListCommentReposit
 import com.none.no_name.domain.playListLike.repository.PlayListLikeRepository;
 import com.none.no_name.domain.playListMusic.repository.PlayListMusicRepository;
 import com.none.no_name.domain.playListTag.repository.PlayListTagRepository;
+import com.none.no_name.domain.tag.entity.Tag;
 import com.none.no_name.domain.tag.repository.TagRepository;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,6 +102,16 @@ public abstract class ServiceTest {
         musicCommentRepository.save(musicComment);
 
         return musicComment;
+    }
+
+    protected Tag createAndSaveTag(Music music) {
+        Tag tag = Tag.builder()
+                .category("category")
+                .build();
+
+        tagRepository.save(tag);
+
+        return tag;
     }
 }
 

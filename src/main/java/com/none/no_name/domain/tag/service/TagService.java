@@ -30,6 +30,8 @@ public class TagService {
 
     public void createTag(Long musicId, Long loginMember, TagRequestApi request) {
 
+        verifiedMember(loginMember);
+
         Tag tag = Tag.createTag(musicId, loginMember, request);
 
         tagRepository.save(tag);
