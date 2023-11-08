@@ -44,6 +44,4 @@ public class MemberMusicService {
     public Music verifiedMusic(Long musicId) {
         return musicRepository.findById(musicId).orElseThrow(MusicNotFoundException::new);
     }
-
-
 }
