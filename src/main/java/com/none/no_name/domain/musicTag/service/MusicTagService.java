@@ -82,6 +82,11 @@ public class MusicTagService {
         musicTagRepository.deleteAll();
     }
 
+    public void updateMusicTag(Long musicId, Long tagId, Long loginMemberId) {
+
+        MusicTag.updateMusicTag(musicId, tagId, loginMemberId);
+    }
+
     public Member verifiedMember(Long loginMemberId) {
 
         return memberRepository.findById(loginMemberId).orElseThrow(MemberAccessDeniedException::new);
