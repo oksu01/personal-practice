@@ -13,9 +13,11 @@ import com.none.no_name.domain.musicComment.repository.MusicCommentRepository;
 import com.none.no_name.domain.musicLike.musicLikeRepository.MusicLikeRepository;
 import com.none.no_name.domain.musicTag.entity.MusicTag;
 import com.none.no_name.domain.musicTag.repository.MusicTagRepository;
+import com.none.no_name.domain.playList.entity.PlayList;
 import com.none.no_name.domain.playList.repository.PlayListRepository;
 import com.none.no_name.domain.playListComment.repository.PlayListCommentRepository;
 import com.none.no_name.domain.playListLike.repository.PlayListLikeRepository;
+import com.none.no_name.domain.playListMusic.entity.PlayListMusic;
 import com.none.no_name.domain.playListMusic.repository.PlayListMusicRepository;
 import com.none.no_name.domain.playListTag.repository.PlayListTagRepository;
 import com.none.no_name.domain.tag.entity.Tag;
@@ -27,6 +29,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -87,7 +90,6 @@ public abstract class ServiceTest {
                 .memberMusics(new ArrayList<>())
                 .playListMusics(new ArrayList<>())
                 .playListMusics(new ArrayList<>())
-                .playListMusics(new ArrayList<>())
                 .musicTags(new ArrayList<>())
                 .build();
 
@@ -137,6 +139,31 @@ public abstract class ServiceTest {
         musicTagRepository.save(musicTag);
 
         return musicTag;
+    }
+
+    protected PlayList createAndSavePlayList(Member member, Music music) {
+        PlayList playList = PlayList.builder()
+                .member(member)
+                .title("title")
+                .coverImg("Img")
+                .content("content")
+                .playListMusics(new ArrayList<PlayListMusic>(1))
+                .build();
+
+        playListRepository.save(playList);
+
+        return playList;
+    }
+
+    protected PlayListMusic createAndSavePlayListMusic(PlayList playList, Music music) {
+        PlayListMusic playListMusic = PlayListMusic.builder()
+                .playList(playList)
+                .music(music)
+                .build();
+
+        playListMusicRepository.save(playListMusic);
+
+        return playListMusic;
     }
 }
 

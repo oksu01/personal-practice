@@ -12,6 +12,7 @@ import com.none.no_name.domain.playList.dto.PlayListInfo;
 import com.none.no_name.domain.playList.entity.PlayList;
 import com.none.no_name.domain.playList.repository.PlayListRepository;
 import com.none.no_name.domain.playList.service.sort.PlayListSort;
+import com.none.no_name.domain.playListMusic.entity.PlayListMusic;
 import com.none.no_name.global.exception.business.member.MemberAccessDeniedException;
 import com.none.no_name.global.exception.business.music.MusicNotFoundException;
 import com.none.no_name.global.exception.business.playList.PlayListNotFoundException;
@@ -20,6 +21,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -62,7 +66,7 @@ public class PlayListService {
     public Page<PlayListInfo> getPlayLists(Long loginMemberId, int page, int size, PlayListSort sort) {
 
         Sort sorting = (sort == PlayListSort.Likes)
-                ? Sort.by(Sort.Direction.DESC, "like", "createdDate")
+                ? Sort.by(Sort.Direction.DESC, "likes", "createdDate")
                 : Sort.by(Sort.Direction.DESC, "createdDate");
 
         PageRequest pageRequest = PageRequest.of(page, size, sorting);
@@ -88,7 +92,9 @@ public class PlayListService {
         verifiedMember(loginMemberId);
         verifiedPlayList(playListId);
 
-        PlayList.updatePlayList(playListId, loginMemberId, request);
+        PlayList playList = PlayList.updatePlayList(playListId, loginMemberId, request);
+
+        playListRepository.save(playList);
     }
 
     public void deletePlayList(Long playListId, Long loginMemberId) {
@@ -99,21 +105,41 @@ public class PlayListService {
     }
 
     public void deleteMusicInPlayList(Long musicId, Long loginMemberId) {
-
         verifiedMember(loginMemberId);
 
-        musicRepository.deleteById(musicId);
+        Optional<Music> music = musicRepository.findById(musicId);
+
+        if (music.isPresent()) {
+            Music presentMusic = music.get();
+            List<PlayListMusic> playListMusics = presentMusic.getPlayListMusics();
+
+            if (!playListMusics.isEmpty()) {
+                PlayList playList = playListMusics.get(0).getPlayList();
+                if (playList != null) {
+                    playListMusics.removeIf(playListMusic -> playListMusic.getMusic().equals(presentMusic));
+                    playListRepository.save(playList);
+                }
+            }
+
+            musicRepository.deleteById(musicId);
+        }
     }
 
     public void addMusic(Long musicId, Long playListId, Long loginMemberId, MusicInfo musicInfo) {
-
         verifiedMember(loginMemberId);
-//        verifiedPlayList(playListId);
 
-        Music music = Music.addMusic(musicId, playListId, musicInfo);
+        Optional<PlayList> playListOpt = playListRepository.findById(playListId);
+
+        if (playListOpt.isEmpty()) {
+            throw new PlayListNotFoundException();
+        }
+        PlayList playList = playListOpt.get();
+
+        Music music = Music.addMusic(musicId, playList.getPlayListId(), musicInfo);
 
         musicRepository.save(music);
     }
+
 
     public Member verifiedMember(Long loginMemberId) {
 
