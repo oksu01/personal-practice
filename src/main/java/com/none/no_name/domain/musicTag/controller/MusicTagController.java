@@ -65,4 +65,12 @@ public class MusicTagController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{music-id}/{tag-id}")
+    public ResponseEntity<Void> updateMusicTag(Long musicId, Long tagId, Long loginMemberId) {
+
+        musicTagService.updateMusicTag(musicId, tagId, loginMemberId);
+
+        return ResponseEntity.noContent().build();
+    }
 }

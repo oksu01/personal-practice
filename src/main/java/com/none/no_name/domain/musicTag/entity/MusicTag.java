@@ -33,4 +33,14 @@ public class MusicTag extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
+    public static MusicTag updateMusicTag(Long musicId, Long tagId, Long loginMemberId) {
+        MusicTag musicTag = MusicTag.builder()
+                .music(Music.builder().musicId(musicId).build())
+                .tag(Tag.builder().tagId(tagId).build())
+                .name("name")
+                .build();
+
+        return musicTag;
+    }
+
 }
