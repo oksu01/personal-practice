@@ -4,7 +4,7 @@ import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.music.entity.Music;
 import com.none.no_name.domain.playList.dto.PlayListCreateApi;
 import com.none.no_name.domain.playList.dto.PlayListPatchApi;
-import com.none.no_name.domain.playList.dto.PlayListRequestApi;
+import com.none.no_name.domain.playList.repository.PlayListRepository;
 import com.none.no_name.domain.playListComment.entity.PlayListComment;
 import com.none.no_name.domain.playListLike.entity.PlayListLike;
 import com.none.no_name.domain.playListMusic.entity.PlayListMusic;
@@ -15,11 +15,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import software.amazon.awssdk.utils.Lazy;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.LAZY;
 
 @Builder
 @Getter
@@ -61,7 +63,7 @@ public class PlayList extends BaseEntity {
 
     private String content;
 
-    @OneToMany(mappedBy = "playList", cascade = ALL)
+    @OneToMany(mappedBy = "playList", cascade = ALL, fetch = LAZY)
     private List<PlayListMusic> playListMusics = new ArrayList<>();
 
     public static PlayList createPlayList(Music music, Member member, PlayListCreateApi request) {
@@ -73,8 +75,8 @@ public class PlayList extends BaseEntity {
                 .build();
     }
 
-    public static void updatePlayList(Long playListId, Long loginMember, PlayListPatchApi request) {
-                PlayList.builder()
+    public static PlayList updatePlayList(Long playListId, Long loginMember, PlayListPatchApi request) {
+          return PlayList.builder()
                 .playListId(playListId)
                 .title(request.getTitle())
                 .coverImg(request.getCoverImg())
