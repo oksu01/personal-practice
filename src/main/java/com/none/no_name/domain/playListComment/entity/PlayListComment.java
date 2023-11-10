@@ -38,8 +38,12 @@ public class PlayListComment extends BaseEntity {
 
     private String content;
 
-    public static PlayListComment createComment(Long playListId, Long loginMemberId, PlayListCommentInfo playListCommentInfo) {
+    private int likes;
+
+    public static PlayListComment createComment(PlayList playList, Member member,  PlayListCommentInfo playListCommentInfo) {
                 return PlayListComment.builder()
+                        .playList(playList)
+                        .member(member)
                         .content(playListCommentInfo.getContent())
                         .name(playListCommentInfo.getName())
                         .image(playListCommentInfo.getImage())
@@ -48,11 +52,22 @@ public class PlayListComment extends BaseEntity {
 
     }
 
-    public static void updateComment(Long commentId, Long loginMemberId, PlayListCommentInfo playListCommentInfo) {
+    public static void updateComment(PlayListComment comment, Member member, PlayList playList, PlayListCommentInfo playListCommentInfo) {
         PlayListComment.builder()
+                .member(member)
+                .playList(playList)
+                .playListCommentId(comment.playListCommentId)
                 .content(playListCommentInfo.getContent())
                 .name(playListCommentInfo.getName())
                 .image(playListCommentInfo.getImage())
                 .build();
+    }
+
+    public void incrementLikes() {
+        this.likes++;
+    }
+
+    public int decrementLikes() {
+        return this.likes--;
     }
 }

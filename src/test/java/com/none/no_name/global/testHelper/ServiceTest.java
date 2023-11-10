@@ -15,6 +15,7 @@ import com.none.no_name.domain.musicTag.entity.MusicTag;
 import com.none.no_name.domain.musicTag.repository.MusicTagRepository;
 import com.none.no_name.domain.playList.entity.PlayList;
 import com.none.no_name.domain.playList.repository.PlayListRepository;
+import com.none.no_name.domain.playListComment.entity.PlayListComment;
 import com.none.no_name.domain.playListComment.repository.PlayListCommentRepository;
 import com.none.no_name.domain.playListLike.repository.PlayListLikeRepository;
 import com.none.no_name.domain.playListMusic.entity.PlayListMusic;
@@ -164,6 +165,21 @@ public abstract class ServiceTest {
         playListMusicRepository.save(playListMusic);
 
         return playListMusic;
+    }
+
+    protected PlayListComment createAndSavePlayListComment(PlayList playList, Member member) {
+        PlayListComment playListComment = PlayListComment.builder()
+                .playListCommentId(1L)
+                .playList(playList)
+                .member(member)
+                .image("Img")
+                .content("content")
+                .name("name")
+                .build();
+
+        playListRepository.save(playList);
+
+        return playListComment;
     }
 }
 

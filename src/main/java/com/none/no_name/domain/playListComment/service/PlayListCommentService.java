@@ -1,6 +1,7 @@
 package com.none.no_name.domain.playListComment.service;
 
 
+import com.none.no_name.domain.member.entity.Member;
 import com.none.no_name.domain.member.repository.MemberRepository;
 import com.none.no_name.domain.musicComment.dto.CommentSort;
 import com.none.no_name.domain.playList.entity.PlayList;
@@ -12,6 +13,7 @@ import com.none.no_name.domain.playListComment.service.sort.PlayListCommentSort;
 import com.none.no_name.global.exception.business.member.MemberAccessDeniedException;
 import com.none.no_name.global.exception.business.musicComment.MusicCommentNotFoundException;
 import com.none.no_name.global.exception.business.playList.PlayListNotFoundException;
+import com.none.no_name.global.exception.business.playListComment.PlayListCommentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,22 +30,22 @@ public class PlayListCommentService {
 
     public void createComment(Long playListId, Long loginMemberId, PlayListCommentInfo playListCommentInfo) {
 
-        verifiedMember(loginMemberId);
+        Member loginMember = verifiedMember(loginMemberId);
 
-        verifiedPlayList(playListId);
+        PlayList playList = verifiedPlayList(playListId);
 
-        PlayListComment comment = PlayListComment.createComment(playListId, loginMemberId, playListCommentInfo);
+        PlayListComment comment = PlayListComment.createComment(playList, loginMember, playListCommentInfo);
 
         playListCommentRepository.save(comment);
     }
 
-    public void updateComment(Long commentId, Long loginMemberId, Long playListId, PlayListCommentInfo playListCommentInfo) {
+    public void updatePlayListComment(Long commentId, Long loginMemberId, Long playListId, PlayListCommentInfo playListCommentInfo) {
 
-        verifiedPlayList(playListId);
-        verifiedComment(commentId);
-        verifiedMember(loginMemberId);
+        PlayList playList = verifiedPlayList(playListId);
+        PlayListComment comment = verifiedComment(commentId);
+        Member loginMember = verifiedMember(loginMemberId);
 
-        PlayListComment.updateComment(commentId, loginMemberId, playListCommentInfo);
+        PlayListComment.updateComment(comment, loginMember, playList, playListCommentInfo);
     }
 
     public Page<PlayListCommentInfo> getComments(Long playListId, Long loginMemberId, int page, int size, PlayListCommentSort sort, PlayListCommentInfo playListCommentInfo) {
@@ -52,7 +54,7 @@ public class PlayListCommentService {
         PlayList playList = verifiedPlayList(playListId);
 
         Sort sorting = (sort == PlayListCommentSort.LIKES)
-                ? Sort.by(Sort.Direction.DESC, "like", "createdDate")
+                ? Sort.by(Sort.Direction.DESC, "likes", "createdDate")
                 : Sort.by(Sort.Direction.DESC, "createdDate");
 
         PageRequest pageRequest = PageRequest.of(page, size, sorting);
@@ -67,7 +69,8 @@ public class PlayListCommentService {
                         comment.getContent(),
                         comment.getMember().getMemberId(),
                         comment.getImage(),
-                        comment.getPlayList().getPlayListId())
+                        comment.getPlayList().getPlayListId(),
+                        comment.getLikes())
         );
 
         return commentInfoPage;
@@ -80,9 +83,9 @@ public class PlayListCommentService {
         playListCommentRepository.deleteById(commentId);
     }
 
-    public void verifiedMember(Long loginMemberId) {
+    public Member verifiedMember(Long loginMemberId) {
 
-        memberRepository.findById(loginMemberId).orElseThrow(MemberAccessDeniedException::new);
+        return memberRepository.findById(loginMemberId).orElseThrow(MemberAccessDeniedException::new);
     }
 
     public PlayList verifiedPlayList(Long playListId) {
@@ -90,9 +93,9 @@ public class PlayListCommentService {
         return playListRepository.findById(playListId).orElseThrow(PlayListNotFoundException::new);
     }
 
-    public void verifiedComment(Long commentId) {
+    public PlayListComment verifiedComment(Long commentId) {
 
-        playListCommentRepository.findById(commentId).orElseThrow(MusicCommentNotFoundException::new);
+        return playListCommentRepository.findById(commentId).orElseThrow(PlayListCommentNotFoundException::new);
     }
 
 }

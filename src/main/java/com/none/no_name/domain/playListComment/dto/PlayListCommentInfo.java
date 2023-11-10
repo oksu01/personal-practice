@@ -17,4 +17,5 @@ public class PlayListCommentInfo {
     private Long memberId;
     private String image;
     private Long playListId;
+    private int likes;
 }
