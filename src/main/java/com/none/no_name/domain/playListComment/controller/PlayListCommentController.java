@@ -28,7 +28,7 @@ public class PlayListCommentController {
                                               @PathVariable("playList-id") @Positive(message = "validation.positive") Long playListId,
                                               @RequestBody PlayListCommentInfo playListCommentInfo) {
 
-        playListCommentService.updateComment(commentId, loginMemberId, playListId, playListCommentInfo);
+        playListCommentService.updatePlayListComment(commentId, loginMemberId, playListId, playListCommentInfo);
 
         return ResponseEntity.noContent().build();
     }

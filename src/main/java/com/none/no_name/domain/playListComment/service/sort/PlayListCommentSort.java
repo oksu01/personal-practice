@@ -10,7 +10,7 @@ import org.springframework.beans.TypeMismatchException;
 public enum PlayListCommentSort implements BaseEnum {
 
     CREATED_DATE("최신순", "created-date", "createdDate"),
-    LIKES("좋아요순", "like", "like"),
+    LIKES("좋아요순", "likes", "likes"),
     ;
 
     private final String description;
